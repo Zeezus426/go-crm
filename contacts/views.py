@@ -18,4 +18,4 @@ def adding_contact(request):
             return redirect('index')
     else:
         form = ContactForm()
-    return render(request, 'add_contact.html', {'form': form})
+    return render(request, 'adding_contact.html', {'form': form})
