@@ -11,10 +11,11 @@ def index(request):
 
 
 def adding_contact(request):
-    addition = get_object_or_404(ContactForm)
     if request.method == "POST":
-        form = ContactForm(request.POST, instance=addition)
+        form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('index')
-    
+    else:
+        form = ContactForm()
+    return render(request, 'add_contact.html', {'form': form})
