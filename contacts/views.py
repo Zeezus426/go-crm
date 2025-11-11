@@ -91,3 +91,8 @@ def delete_contact(request, contact_id):
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
     
 
+def contact_contact(request, contact_id):
+    contact = get_object_or_404(Contact, pk=contact_id)
+    contact.objects.filter(id=contact_id)
+
+    

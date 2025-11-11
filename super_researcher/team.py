@@ -1,6 +1,7 @@
 # Alright we have a few agents here we have a deep researcher, and 2 general researchers, and a orchestrator.
 # Both of them feed the neo4j vector hourly with new data from the web and other sources. 
 # Then everyday we have the orchestrator agent summarize the findings of the researchers then give a list of possible clients interested in gosupplys services.
+
 # Imports
 from smolagents import (
     CodeAgent,
@@ -17,8 +18,6 @@ model = OpenAIServerModel(
     api_key="Faaahhh",
 )
 
-
-
 web_agent = ToolCallingAgent(
     tools=[WebSearchTool(), VisitWebpageTool()],
     model=model,
@@ -27,12 +26,12 @@ web_agent = ToolCallingAgent(
     description="Runs web searches for you.",
 )
 
-
 manager_agent = CodeAgent(
-    tools=[],
+    tools=[],  # No direct tools for the manager
     model=model,
-    managed_agents=[web_agent],
+    managed_agents=[web_agent],  # This gives the manager access to delegate to web_agent
     additional_authorized_imports=["time", "numpy", "pandas"],
 )
 
+# The manager will now delegate web search tasks to the web_agent
 answer = manager_agent.run("If LLM training continues to scale up at the current rhythm until 2030, what would be the electric power in GW required to power the biggest training runs by 2030? What would that correspond to, compared to some countries? Please provide a source for any numbers used.")
