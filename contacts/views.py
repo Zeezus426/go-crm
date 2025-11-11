@@ -9,9 +9,15 @@ from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
 # Main page
-def index(request):
+def index_func(request):
     contacts = Contact.objects.all()
     return render(request, 'index.html', {'contacts': contacts})
+
+def more_contact_info(request, contact_id):
+    contacts = get_object_or_404(Contact, pk=contact_id)
+    if contacts: 
+        Contact.objects.all()
+        return render(request, 'more_contact_info.html', {'contacts': contacts})
 
 
 def adding_contact(request):
@@ -21,7 +27,7 @@ def adding_contact(request):
             contact = form.save(commit=False)  # Don't save to DB yet
             contact.created_at = timezone.now()  # Set current timestamp
             contact.save()  # Now save to DB
-            return redirect('')  # Replace with your desired URL name
+            return redirect('/index')  # Replace with your desired URL name
     else:
         form = ContactForm()
     return render(request, 'adding_contact.html', {'form': form})
@@ -34,7 +40,7 @@ def update_contact(request, contact_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Contact updated successfully!')
-            return redirect('')  # Redirect back to the main page
+            return redirect('/index')  # Redirect back to the main page
     else:
         form = ContactForm(instance=contact)
     
@@ -49,6 +55,8 @@ def delete_contact(request, contact_id):
         try:
             contact = get_object_or_404(Contact, id=contact_id)
             contact_name = contact.name
+            if contact_name == '':
+                contact_name = 'Unnamed Contact'
             contact.delete()
             return JsonResponse({'success': True, 'message': f'Contact {contact_name} deleted successfully'})
         except Exception as e:
