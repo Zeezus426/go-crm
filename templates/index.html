@@ -3,26 +3,163 @@
 <html>
 <head>
     <title>Contact List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            background: #f8f9fa;
+        }
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            background: #e9ecef;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            position: relative;
+            top: 1px;
+        }
+        .tab.active {
+            background: white;
+            border-bottom: 1px solid white;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .contact-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+        .contact-field {
+            margin-bottom: 8px;
+        }
+        .add-btn {
+            display: inline-block;
+            margin: 15px 0;
+            padding: 10px 15px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .add-btn:hover {
+            background: #0056b3;
+        }
+        .no-records {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            padding: 40px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Contacts</h1>
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="contacts">Current Users</div>
+            <div class="tab" data-tab="leads">Leads</div>
+        </div>
 
-    {% if contacts %}
-        <ul>
-            {% for contact in contacts %}
-                <li>
-                    <strong>Name:</strong> {{ contact.name }}<br>
-                    <strong>Email:</strong> {{ contact.email }}<br>
-                    <strong>Phone:</strong> {{ contact.phone|default:"Not provided" }}<br>
-                    <strong>Address:</strong> {{ contact.address|default:"Not provided" }}<br>
-                    <small>Added on: {{ contact.created_at|date:"M d, Y" }}</small>
-                    <hr>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No contacts found.</p>
-    {% endif %}
-    <a href="{% url 'adding_contact' %}">Add New Contact</a>
+        <div id="contacts" class="tab-content active">
+            <h2>Current Users</h2>
+            {% if contacts %}
+                <div class="contacts-list">
+                    {% for contact in contacts %}
+                        <div class="contact-item">
+                            <div class="contact-field">
+                                <strong>Name:</strong> {{ contact.name }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Email:</strong> {{ contact.email }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Phone:</strong> {{ contact.phone|default:"Not provided" }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Address:</strong> {{ contact.address|default:"Not provided" }}
+                            </div>
+                            <div class="contact-field">
+                                <small>Added on: {{ contact.created_at|date:"M d, Y" }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-records">No current users found.</div>
+            {% endif %}
+            <a href="{% url 'adding_contact' %}" class="add-btn">Add New User</a>
+        </div>
+
+        <div id="leads" class="tab-content">
+            <h2>Leads</h2>
+            {% if leads %}
+                <div class="contacts-list">
+                    {% for lead in leads %}
+                        <div class="contact-item">
+                            <div class="contact-field">
+                                <strong>Name:</strong> {{ lead.name }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Email:</strong> {{ lead.email }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Phone:</strong> {{ lead.phone|default:"Not provided" }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Address:</strong> {{ lead.address|default:"Not provided" }}
+                            </div>
+                            <div class="contact-field">
+                                <small>Added on: {{ lead.created_at|date:"M d, Y" }}</small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-records">No leads found.</div>
+            {% endif %}
+            <a href="{% url 'adding_contact' %}" class="add-btn">Add New Lead</a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>
