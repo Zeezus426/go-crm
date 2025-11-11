@@ -9,12 +9,12 @@ class Contact(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Auto-set on creation
         # New classification field with predefined choices
     LEAD_CLASSIFICATIONS = [
-        ('new', 'New Lead'),
-        ('growing_interest', 'Growing Interest'),
-        ('leading', 'Leading'),
-        ('dying', 'Dying'),
-        ('converted', 'Converted'),
-        ('cold', 'Cold'),
+        ('New', 'New Lead'),
+        ('Growing Interest', 'Growing Interest'),
+        ('Leading', 'Leading'),
+        ('Dying', 'Dying'),
+        ('Converted', 'Converted'),
+        ('Cold', 'Cold'),
     ]
     lead_class = models.CharField(
         max_length=20,

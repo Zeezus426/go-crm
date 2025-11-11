@@ -13,7 +13,7 @@ def index_func(request):
     contacts = Contact.objects.all()
     return render(request, 'index.html', {'contacts': contacts})
 
-def more_contact_info(request, contact_id):
+def inquire(request, contact_id):
     contacts = get_object_or_404(Contact, pk=contact_id)
     if contacts: 
         Contact.objects.all()
@@ -54,7 +54,7 @@ def delete_contact(request, contact_id):
     if request.method == 'POST':
         try:
             contact = get_object_or_404(Contact, id=contact_id)
-            contact_name = contact.name
+            contact_name = contact.Full_name
             if contact_name == '':
                 contact_name = 'Unnamed Contact'
             contact.delete()

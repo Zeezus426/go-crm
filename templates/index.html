@@ -120,11 +120,11 @@
         
         <div class="tabs">
             <div class="tab active" data-tab="contacts">Current Users</div>
-            <div class="tab" data-tab="leads">Leads</div>
+            <div class="tab" data-tab="leads">AI Leads</div>
         </div>
 
         <div id="contacts" class="tab-content active">
-            <h2>Current Users</h2>
+            <h2>Current Leads</h2>
             {% if contacts %}
                 <div class="contacts-list">
                     {% for contact in contacts %}
@@ -139,14 +139,13 @@
                             </div>
                             
                             <div class="contact-field">
-                                <strong>Name:</strong> {{ contact.name }}
+                                <strong>Name:</strong> {{ contact.Full_name }}
                             </div>
                             <div class="contact-field">
                                 <strong>Email:</strong> {{ contact.email }}
                             </div>
                             <div class="contact-field">
-                                <strong>Lead Classification: </strong>
-                                {{ contact.lead_classification|default:"Not specified" }}
+                                <strong>Lead Classification: </strong> {{ contact.lead_class}}
                             </div>  
                         </div>
                     {% endfor %}
@@ -158,7 +157,7 @@
         </div>
 
         <div id="leads" class="tab-content">
-            <h2>Leads</h2>
+            <h2>AI Generated Leads</h2>
             {% if leads %}
                 <div class="contacts-list">
                     {% for lead in leads %}
