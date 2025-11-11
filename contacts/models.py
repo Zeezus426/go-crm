@@ -3,9 +3,23 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Contact(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
+    Full_name = models.CharField(max_length=60)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)  # Auto-set on creation
-    rating = models.IntegerField(null=True, blank=True)
+        # New classification field with predefined choices
+    LEAD_CLASSIFICATIONS = [
+        ('new', 'New Lead'),
+        ('growing_interest', 'Growing Interest'),
+        ('leading', 'Leading'),
+        ('dying', 'Dying'),
+        ('converted', 'Converted'),
+        ('cold', 'Cold'),
+    ]
+    lead_class = models.CharField(
+        max_length=20,
+        choices=LEAD_CLASSIFICATIONS,
+        default='new',
+        blank=True,
+        null=True,
+    )
