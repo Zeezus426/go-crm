@@ -124,7 +124,8 @@ def email_email(request, contact_id):
             emails = sent_emails.objects.create(
                 contact=contact,
                 subject=subject,
-                body=message,
+                message=message,
+                sent_at = timezone.now(),
                 from_email=from_email,
             )
 
@@ -152,7 +153,7 @@ def email_email(request, contact_id):
         }) 
 
 
-def sent_emails(request):
+def ahhh(request):
     if request.method == "GET": 
         emails = get_object_or_404(sent_emails)
     return JsonResponse({'emails': emails})
