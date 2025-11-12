@@ -35,6 +35,10 @@
             font-size: 14px;
             box-sizing: border-box;
         }
+        .readonly-field {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
         textarea {
             height: 150px;
             resize: vertical;
@@ -91,9 +95,9 @@
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="from_email">From Email:</label>
-                <input type="email" id="from_email" name="from_email" required 
-                       placeholder="your@email.com">
+                <label for="to_email">To:</label>
+                <input type="email" id="to_email" name="to_email" readonly 
+                       value="{{ contact.email }}" class="readonly-field">
             </div>
             
             <div class="form-group">
@@ -124,6 +128,9 @@
             // Get form data
             const formData = new FormData(this);
             
+            // Remove the to_email field as it's not needed in the request
+            formData.delete('to_email');
+            
             // Send AJAX request
             fetch("{% url 'email_email' contact_id=contact.id %}", {
                 method: 'POST',
@@ -144,6 +151,15 @@
                     messageDiv.className = 'message success';
                     messageDiv.textContent = data.message;
                     document.getElementById('emailForm').reset();
+                    // Reset the recipient email field
+                    document.getElementById('to_email').value = "{{ contact.email }}";
+                    
+                    // Redirect if redirect URL is provided
+                    if (data.redirect) {
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 1500);
+                    }
                 } else {
                     messageDiv.className = 'message error';
                     messageDiv.textContent = 'Error: ' + data.error;

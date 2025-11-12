@@ -99,11 +99,12 @@ def email_email(request, contact_id):
     if request.method == "POST":
         try:
             contact = get_object_or_404(Contact, pk=contact_id)
+            recip_email = contact.email
             
             # Validate required fields
             subject = request.POST.get('subject')
             message = request.POST.get('message')
-            from_email = request.POST.get('from_email')
+            from_email = recip_email
             
             if not all([subject, message, from_email]):
                 return JsonResponse({
@@ -121,7 +122,8 @@ def email_email(request, contact_id):
             )
             return JsonResponse({
                 'success': True, 
-                'message': 'Email sent successfully'
+                'message': 'Email sent successfully',
+                redirect: '/index',
             })
             
         except Exception as e:
