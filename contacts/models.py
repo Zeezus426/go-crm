@@ -49,3 +49,13 @@ class EnquiryLog(models.Model):
     
     def __str__(self):
         return f"Enquiry for {self.contact.Full_name} - {self.get_enquiry_type_display()}"
+    
+
+class sent_emails(models.Model):
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=200)
+    message = models.CharField(null=True, blank=True, max_length=2000)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    from_email = models.EmailField(null=True, blank=True) 
+
+    

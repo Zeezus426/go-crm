@@ -3,7 +3,7 @@ from django.http import JsonResponse
 
 from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404   
-from .models import Contact, EnquiryLog
+from .models import Contact, sent_emails
 from .forms import ContactForm
 from django.template.loader import get_template
 from django.contrib import messages
@@ -120,10 +120,19 @@ def email_email(request, contact_id):
                 recipient_list=[contact.email],
                 fail_silently=False,
             )
+
+            emails = sent_emails.objects.create(
+                contact=contact,
+                subject=subject,
+                body=message,
+                from_email=from_email,
+            )
+
             return JsonResponse({
                 'success': True, 
                 'message': 'Email sent successfully',
-                redirect: '/index',
+                'redirect': '/index',
+                'saved_email_id': emails
             })
             
         except Exception as e:
@@ -143,5 +152,7 @@ def email_email(request, contact_id):
         }) 
 
 
-
-    
+def sent_emails(request):
+    if request.method == "GET": 
+        emails = get_object_or_404(sent_emails)
+    return JsonResponse({'emails': emails})

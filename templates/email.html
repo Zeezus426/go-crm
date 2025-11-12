@@ -151,14 +151,12 @@
                     messageDiv.className = 'message success';
                     messageDiv.textContent = data.message;
                     document.getElementById('emailForm').reset();
-                    // Reset the recipient email field
-                    document.getElementById('to_email').value = "{{ contact.email }}";
                     
                     // Redirect if redirect URL is provided
                     if (data.redirect) {
                         setTimeout(() => {
                             window.location.href = data.redirect;
-                        }, 1500);
+                        }, 1500); 
                     }
                 } else {
                     messageDiv.className = 'message error';
