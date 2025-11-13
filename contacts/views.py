@@ -142,7 +142,7 @@ def email_email(request, contact_id):
                 })
             
             # Send email
-            send_mail(
+            sent = send_mail(
                 subject=subject,
                 message=message,
                 from_email=from_email,
@@ -158,6 +158,13 @@ def email_email(request, contact_id):
                 from_email=from_email,
                 sent_by=request.user if request.user.is_authenticated else None
             )
+            if sent == True: 
+                print("Email sent successfully")
+                print("Shifting from new to growing interest")
+                up_dog = contact.lead_class
+                if up_dog == "New":
+                    contact.lead_class = "Growing Interest"
+                    contact.save()
             # No need to call emails.save() after objects.create()
             print("Saved the sent email to the database")
 
@@ -211,7 +218,7 @@ def contact_detail(request, contact_id):
 
 def ahhh(request):
     # Cant think of a better name right now
-    # This just returns all the sent messages for the index page
-    emails = sent_emails.objects.all()
+    # This just returns all the sent messages for the page
+    emails = sent_emails.objects.all().order_by('-sent_at')  # Order by most recent first
     # The key in the context dictionary must match the variable name in the template
     return render(request, 'index.html', {'emails': emails})
