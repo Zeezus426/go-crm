@@ -70,7 +70,8 @@ def more_info(request, contact_id):
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': False, 'error': str(e)})
     
-    return render(request, 'more_contact_info.html', {'contact': contact})
+    return render(request, 'more_contact_info.html', {'contact': contact,
+                                                      "LEAD_CLASSIFICATIONS": Contact.LEAD_CLASSIFICATIONS})
 
 # Manually adding a contact
 def adding_contact(request):
