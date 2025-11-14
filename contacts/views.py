@@ -71,7 +71,8 @@ def more_info(request, contact_id):
                 return JsonResponse({'success': False, 'error': str(e)})
     
     return render(request, 'more_contact_info.html', {'contact': contact,
-                                                      "LEAD_CLASSIFICATIONS": Contact.LEAD_CLASSIFICATIONS})
+                                                      "LEAD_CLASSIFICATIONS": Contact.LEAD_CLASSIFICATIONS,
+                                                      'send_emails': sent_emails.objects.filter(contact=contact).order_by('-sent_at')})
 
 # Manually adding a contact
 def adding_contact(request):
