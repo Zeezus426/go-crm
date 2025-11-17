@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "sms",
     'allauth',
     'allauth.account',
+    'debug_toolbar',
 
 
     # Created Apps
@@ -93,7 +94,6 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# settings.py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -152,3 +152,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
+
+SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
+
+TWILIO_ACCOUNT=os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH=os.getenv("TWILIO_AUTH_TOKEN")

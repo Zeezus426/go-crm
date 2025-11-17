@@ -251,8 +251,8 @@ def send_email_view(request, contact_id):
             if sent == True: 
                 print("Email sent successfully")
                 print("Shifting from new to Contacted")
-                up_dog = contact.lead_class
-                if up_dog == "New":
+                Updated_contact = contact.lead_class
+                if Updated_contact == "New":
                     contact.lead_class = "Contacted"
                     contact.save()
             print("Saved the sent email to the database")
@@ -343,8 +343,8 @@ def send_sms_message_view(request, contact_id):
             if sms:
                 print("SMS sent successfully")
                 print("Shifting from new to Contacted")
-                up_dog = contact.lead_class
-                if up_dog == "New":
+                Updated_contact = contact.lead_class
+                if Updated_contact == "New":
                     contact.lead_class = "Contacted"
                     contact.save()
             

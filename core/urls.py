@@ -21,5 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('contacts.urls')),
+    
+    # Debug to be removed in production
+    path('__debug__/', include('debug_toolbar.urls')),
     # path('super_researcher/', include('super_researcher.urls')),  # ✅ Fixed
 ]
