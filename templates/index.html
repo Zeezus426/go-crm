@@ -161,7 +161,7 @@
             display: none;
         }
 
-                /* Filter Bar Styles */
+        /* Filter Bar Styles */
         .filter-bar {
             background: #f8f9fa;
             padding: 20px;
@@ -293,6 +293,100 @@
             }
         }
 
+        /* AI Lead Badge */
+        .ai-badge {
+            display: inline-block;
+            background: #6f42c1;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+
+        /* AI Lead Status */
+        .ai-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+
+        .status-pending {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .status-generating {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .status-ready {
+            background: #28a745;
+            color: white;
+        }
+
+        /* AI Specific Fields */
+        .ai-field {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        .ai-field-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ai-field-value {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            background: linear-gradient(45deg, #6f42c1, #007bff);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 15px 0;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .generate-btn:hover {
+            background: linear-gradient(45deg, #5a2d91, #0056b3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #6f42c1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body>
@@ -411,46 +505,89 @@
         </div>
 
         <div id="leads" class="tab-content">
-            <h2>AI Generated Leads</h2>
-            {% if leads %}
+            <h2>AI Generated Leads <span class="ai-badge">AI</span></h2>
+            
+            <!-- AI Lead Generation Controls -->
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px;">
+                <h3 style="margin-top: 0; color: #495057;">AI Lead Generation</h3>
+                <p style="margin-bottom: 10px; color: #6c757d;">Generate new leads using AI analysis of market data and customer patterns.</p>
+                <button id="generateLeadBtn" class="generate-btn" onclick="generateAILead()">
+                    Generate New AI Lead
+                </button>
+                <div id="generateStatus" style="margin-top: 10px; display: none;">
+                    <span id="statusText">Initializing AI...</span>
+                    <div class="loading"></div>
+                </div>
+            </div>
+
+            {% if ai_leads %}
                 <div class="contacts-list">
-                    {% for lead in leads %}
-                        <div class="contact-item" id="contact-{{ lead.id }}">
+                    {% for ai_lead in ai_leads %}
+                        <div class="contact-item" id="ai-lead-{{ ai_lead.id }}">
                             <div class="contact-actions">
-                                <a href="{% url 'update_contact' lead.id %}" class="edit-btn">Edit</a>
+                                {% if ai_lead.status == 'ready' %}
+                                    <a href="{% url 'ai_lead_info' ai_lead.id %}" class="info-btn">View Details</a>
+                                    <a href="{% url 'convert_ai_lead' ai_lead.id %}" class="enquire-btn">Convert to Contact</a>
+                                {% endif %}
                                 <button class="delete-btn" 
-                                        data-contact-id="{{ lead.id }}" 
-                                        data-contact-type="lead">
+                                        data-lead-id="{{ ai_lead.id }}" 
+                                        data-lead-type="ai_lead">
                                     Delete
                                 </button>
                             </div>
                             
+                            <!-- AI Lead Status -->
                             <div class="contact-field">
-                                <strong>Name:</strong> {{ lead.name }}
+                                <strong>Status:</strong> 
+                                <span class="ai-status status-{{ ai_lead.status }}">
+                                    {% if ai_lead.status == 'pending' %}Pending Generation
+                                    {% elif ai_lead.status == 'generating' %}Generating
+                                    {% elif ai_lead.status == 'ready' %}Ready
+                                    {% else %}Unknown{% endif %}
+                                </span>
+                            </div>
+
+                            <!-- AI Lead Core Information -->
+                            <div class="contact-field">
+                                <strong>Potential Name:</strong> {{ ai_lead.predicted_name|default:"Not provided" }}
                             </div>
                             <div class="contact-field">
-                                <strong>Email:</strong> {{ lead.email }}
+                                <strong>Potential Email:</strong> {{ ai_lead.predicted_email|default:"Not provided" }}
                             </div>
                             <div class="contact-field">
-                                <strong>Lead Classification: </strong>
-                                {{ lead.lead_classification|default:"Not specified" }}
+                                <strong>Potential Phone:</strong> {{ ai_lead.predicted_phone|default:"Not provided" }}
                             </div>
-                            <div class="contact-field">
-                                <strong>Phone Number:</strong> {{ lead.phone|default:"Not provided" }}
+                            
+                            <!-- AI Analysis Fields -->
+                            <div class="ai-field">
+                                <div class="ai-field-label">AI Confidence Score</div>
+                                <div class="ai-field-value">{{ ai_lead.confidence_score|default:"Not provided" }}%</div>
                             </div>
-                            <div class="contact-field">
-                                <strong>Address:</strong> {{ lead.address|default:"Not provided" }}
+                            
+                            <div class="ai-field">
+                                <div class="ai-field-label">Lead Source</div>
+                                <div class="ai-field-value">{{ ai_lead.ai_source|default:"Not provided" }}</div>
                             </div>
+                            
+                            <div class="ai-field">
+                                <div class="ai-field-label">AI Analysis</div>
+                                <div class="ai-field-value">{{ ai_lead.ai_analysis|default:"Analysis pending..." }}</div>
+                            </div>
+                            
+                            <div class="ai-field">
+                                <div class="ai-field-label">Predicted Interest</div>
+                                <div class="ai-field-value">{{ ai_lead.predicted_interest|default:"Not provided" }}</div>
+                            </div>
+                            
                             <div class="contact-field">
-                                <strong>Added on: </strong>{{ lead.created_at|date:"M d, Y" }}
+                                <strong>Created:</strong> {{ ai_lead.created_at|date:"M d, Y H:i" }}
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="no-records">No leads found.</div>
+                <div class="no-records">No AI leads have been generated yet. Click the button above to start generating leads.</div>
             {% endif %}
-            <a href="{% url 'adding_contact' %}" class="add-btn">Add New Lead</a>
         </div>
     </div>
 
@@ -470,8 +607,8 @@
         // Delete functionality with AJAX
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', function() {
-                const contactId = this.getAttribute('data-contact-id');
-                const contactType = this.getAttribute('data-contact-type');
+                const contactId = this.getAttribute('data-contact-id') || this.getAttribute('data-lead-id');
+                const contactType = this.getAttribute('data-contact-type') || this.getAttribute('data-lead-type');
                 const contactName = this.closest('.contact-item').querySelector('strong').nextSibling.textContent.trim();
                 
                 if (confirm(`Are you sure you want to delete ${contactName}?`)) {
@@ -487,7 +624,7 @@
                     .then(data => {
                         if (data.success) {
                             // Remove the contact item from DOM
-                            const contactElement = document.getElementById(`contact-${contactId}`);
+                            const contactElement = document.getElementById(`contact-${contactId}`) || document.getElementById(`ai-lead-${contactId}`);
                             contactElement.remove();
                             
                             // Show success message
@@ -533,6 +670,63 @@
             setTimeout(() => {
                 successMessage.style.display = 'none';
             }, 3000);
+        }
+
+        // AI Lead Generation
+        function generateAILead() {
+            const btn = document.getElementById('generateLeadBtn');
+            const status = document.getElementById('generateStatus');
+            const statusText = document.getElementById('statusText');
+            
+            // Show loading state
+            btn.disabled = true;
+            status.style.display = 'block';
+            statusText.textContent = 'Initializing AI generation...';
+            
+            // Simulate AI generation process
+            setTimeout(() => {
+                statusText.textContent = 'Analyzing market data...';
+            }, 1000);
+            
+            setTimeout(() => {
+                statusText.textContent = 'Identifying potential leads...';
+            }, 2500);
+            
+            setTimeout(() => {
+                statusText.textContent = 'Validating lead information...';
+            }, 4000);
+            
+            setTimeout(() => {
+                // Send request to backend to create AI lead
+                fetch('/generate-ai-lead/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccessMessage('AI lead generated successfully!');
+                        // Reload the page to show the new lead
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        alert('Error generating AI lead: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error generating AI lead');
+                })
+                .finally(() => {
+                    // Reset button state
+                    btn.disabled = false;
+                    status.style.display = 'none';
+                });
+            }, 5500);
         }
 
         // Add this to your existing script section
@@ -589,7 +783,7 @@
                 if (!noRecords) {
                     const noRecordsDiv = document.createElement('div');
                     noRecordsDiv.className = 'no-records';
-                    noRecordsDiv.textContent = contactType === 'contact' ? 'No current users found.' : 'No leads found.';
+                    noRecordsDiv.textContent = contactType === 'contact' ? 'No current users found.' : 'No AI leads found.';
                     tabContent.querySelector('.contacts-list').appendChild(noRecordsDiv);
                 }
             }
