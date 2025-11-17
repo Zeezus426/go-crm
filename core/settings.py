@@ -85,18 +85,17 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# settings.py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '458speciale',
-        'USER': 'metro-user',
-        'PASSWORD': 'its_terrible',
-        'HOST': 'localhost',   # ← CHANGE THIS! Host is your machine
-        'PORT': '1111',        # ← CHANGE THIS! Use the HOST port you exposed
+        'NAME': 'go-crm',
+        'USER': 'Go-crm',
+        'PASSWORD': 'G0-Supply-C3RM-458',
+        'HOST': 'localhost',  # or '127.0.0.1'
+        'PORT': '1111',  # Host port from docker-compose
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

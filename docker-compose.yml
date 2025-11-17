@@ -4,10 +4,9 @@ services:
   database:
     image: "postgres:latest"
     ports:
-      - "1111:1111"
+      - "1111:5432"  # Maps host:1111 → container:5432 (Postgres default)
     environment:
       POSTGRES_USER: "Go-crm"
       POSTGRES_PASSWORD: "G0-Supply-C3RM-458"
       POSTGRES_DB: "go-crm"
-      restart: "always"
-
+    restart: "always"  # Moved out of environment section
