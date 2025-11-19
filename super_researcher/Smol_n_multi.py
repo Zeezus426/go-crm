@@ -1,18 +1,21 @@
-
-
-from typing_extensions import TypedDict
-from langgraph.graph import StateGraph, START, END
-from IPython.display import Image, display
-from pydantic import BaseModel, Field
-from typing import Annotated, List
-import operator
-from langchain.messages import HumanMessage, SystemMessage, ToolMessage
+from typing import Annotated
+from langchain_core.messages import BaseMessage, HumanMessage
 from langchain_openai import ChatOpenAI
-from langgraph.types import Send
+from langchain.agents import create_agent
+from langgraph.graph import MessagesState, END
+from langgraph.types import Command
+from typing import Literal
+
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_core.tools import tool
+from langchain_experimental.utilities import PythonREPL
+from langgraph.graph import StateGraph, START
 from langchain_mcp_adapters.client import MultiServerMCPClient  
-from langchain.messages import AnyMessage
-from langgraph.graph import MessagesState
-from typing_extensions import Literal
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+OPENAIAPI = os.getenv("OPENAI_API_KEY")
 
 client = MultiServerMCPClient({  
         "search": {
@@ -22,165 +25,148 @@ client = MultiServerMCPClient({
         },
 })
 
+
+# llm = ChatOpenAI(
+#     model ="local-llm",
+#     api_key="sk-xxxx",
+#     base_url="http://127.0.0.1:1234/v1"
+# )
+
 llm = ChatOpenAI(
-    model ="local-llm",
-    api_key="sk-xxxx",
-    base_url="http://127.0.0.1:1234/v1"
+    model="gpt-4.1",
+    api_key=OPENAIAPI,
+
+
 )
-async def main():
-    tools = await client.get_tools()  
-    tools_by_name = {tool.name: tool for tool in tools}
-    model_with_tools = llm.bind_tools(tools)
-
-    # Schema for structured output to use in planning
-    class Section(BaseModel):
-        name: str = Field(
-            description="Name for this section of the report.",
-        )
-        description: str = Field(
-            description="Brief overview of the main topics and concepts to be covered in this section.",
-        )
-
-
-    class Sections(BaseModel):
-        sections: List[Section] = Field(
-            description="Sections of the report.",
-        )
-
-    # Augment the LLM with schema for structured output
-    planner = llm.with_structured_output(Sections)
-
-    # Graph state
-    class State(TypedDict):
-        topic: str  # Report topic
-        messages: Annotated[list[AnyMessage], operator.add]
-        llm_calls: int
-        sections: list[Section]  # List of report sections
-        completed_sections: Annotated[
-            list, operator.add
-        ]  # All workers write to this key in parallel
-        final_report: str  # Final report
-
-
-    # Worker state
-    class WorkerState(TypedDict):
-        section: Section
-        completed_sections: Annotated[list, operator.add]
-        messages: Annotated[list[AnyMessage], operator.add]
-        llm_calls: int
-
-
-    # Nodes
-    def orchestrator(state: State):
-        """Orchestrator that generates a plan for the report"""
-
-        # Generate queries
-        report_sections = planner.invoke(
-            [
-                SystemMessage(content="Generate a plan for the report."),
-                HumanMessage(content=f"Here is the report topic: {state['topic']}"),
-            ]
-        )
-
-        return {"sections": report_sections.sections}
-
-
-    def llm_call(state: WorkerState):
-        """Worker writes a section of the report"""
-
-        # Generate section
-        section = model_with_tools.invoke(
-            [
-                SystemMessage(
-                    content="Write a report section following the provided name and description. Include no preamble for each section. Use markdown formatting."
-                ),
-                HumanMessage(
-                    content=f"Here is the section name: {state['section'].name} and description: {state['section'].description}"
-                ),
-            ]
-            + state["messages"]
-        )
-
-        # Write the updated section to completed sections
-        return {"completed_sections": [section.content]}
-    
-    def tool_node(state: dict):
-        """Performs the tool call"""
-
-        result = []
-        for tool_call in state["messages"][-1].tool_calls:
-            tool = tools_by_name[tool_call["name"]]
-            observation = tool.invoke(tool_call["args"])
-            result.append(ToolMessage(content=observation, tool_call_id=tool_call["id"]))
-        return {"messages": result}
-    
-    def should_continue(state: MessagesState) -> Literal["tool_node", END]:
-        """Decide if we should continue the loop or stop based upon whether the LLM made a tool call"""
-
-        messages = state["messages"]
-        last_message = messages[-1]
-
-        # If the LLM makes a tool call, then perform an action
-        if last_message.tool_calls:
-            return "tool_node"
-
-        # Otherwise, we stop (reply to the user)
-        return END
-
-
-    def synthesizer(state: State):
-        """Synthesize full report from sections"""
-
-        # List of completed sections
-        completed_sections = state["completed_sections"]
-
-        # Format completed section to str to use as context for final sections
-        completed_report_sections = "\n\n---\n\n".join(completed_sections)
-
-        return {"final_report": completed_report_sections}
-
-
-    # Conditional edge function to create llm_call workers that each write a section of the report
-    def assign_workers(state: State):
-        """Assign a worker to each section in the plan"""
-
-        # Kick off section writing in parallel via Send() API
-        return [Send("llm_call", {"section": s, "messages": []}) for s in state["sections"]]
 
 
 
-    # Build workflow
-    orchestrator_worker_builder = StateGraph(State)
+duck_tool = DuckDuckGoSearchRun(max_results=5)
 
-    # Add the nodes
-    orchestrator_worker_builder.add_node("orchestrator", orchestrator)
-    orchestrator_worker_builder.add_node("llm_call", llm_call)
-    orchestrator_worker_builder.add_node("tool_node", tool_node)
-    orchestrator_worker_builder.add_node("synthesizer", synthesizer)
+# Warning: This executes code locally, which can be unsafe when not sandboxed
 
-    # Add edges to connect nodes
-    orchestrator_worker_builder.add_edge(START, "orchestrator")
-    
-    orchestrator_worker_builder.add_conditional_edges(
-        "orchestrator", 
-        assign_workers, 
-        ["llm_call"], should_continue, ["tool_node"]
+repl = PythonREPL()
+
+
+@tool
+def python_repl_tool(
+    code: Annotated[str, "The python code to execute to generate your chart."],
+):
+    """Use this to execute python code. If you want to see the output of a value,
+    you should print it out with `print(...)`. This is visible to the user."""
+    try:
+        result = repl.run(code)
+    except BaseException as e:
+        return f"Failed to execute. Error: {repr(e)}"
+    result_str = f"Successfully executed:\n```python\n{code}\n```\nStdout: {result}"
+    return (
+        result_str + "\n\nIf you have completed all tasks, respond with FINAL ANSWER."
     )
-    orchestrator_worker_builder.add_edge(["llm_call"], "synthesizer")
-    orchestrator_worker_builder.add_edge("synthesizer", END)
 
-    # Compile the workflow
-    orchestrator_worker = orchestrator_worker_builder.compile()
 
-    # Show the workflow
-    display(Image(orchestrator_worker.get_graph().draw_mermaid_png()))
 
-    # Invoke
-    state = orchestrator_worker.invoke({"topic": "Research and Create a report on LLM scaling laws"})
 
-    print(state["final_report"])
+def make_system_prompt(suffix: str) -> str:
+    return (
+        "You are a helpful AI assistant, collaborating with other assistants."
+        " Use the provided tools to progress towards answering the question."
+        " If you are unable to fully answer, that's OK, another assistant with different tools "
+        " will help where you left off. Execute what you can to make progress."
+        " If you or any of the other assistants have the final answer or deliverable,"
+        " prefix your response with FINAL ANSWER so the team knows to stop."
+        f"\n{suffix}"
+    )
 
-if __name__ == "__main__":
-    import asyncio
 
-    asyncio.run(main())
+
+
+def get_next_node(last_message: BaseMessage, goto: str):
+    if "FINAL ANSWER" in last_message.content:
+        # Any agent decided the work is done
+        return END
+    return goto
+
+
+# Research agent and node
+research_agent = create_agent(
+    llm,
+    tools=[duck_tool],
+    system_prompt=make_system_prompt(
+        "You can only do research. You have access to a search tool use it approriately. "
+        "You are working with a chart generator colleague."
+    ),
+)
+
+
+def research_node(
+    state: MessagesState,
+) -> Command[Literal["chart_generator", END]]:
+    result = research_agent.invoke(state)
+    goto = get_next_node(result["messages"][-1], "chart_generator")
+    # wrap in a human message, as not all providers allow
+    # AI message at the last position of the input messages list
+    result["messages"][-1] = HumanMessage(
+        content=result["messages"][-1].content, name="researcher"
+    )
+    return Command(
+        update={
+            # share internal message history of research agent with other agents
+            "messages": result["messages"],
+        },
+        goto=goto,
+    )
+
+
+# Chart generator agent and node
+# NOTE: THIS PERFORMS ARBITRARY CODE EXECUTION, WHICH CAN BE UNSAFE WHEN NOT SANDBOXED
+chart_agent = create_agent(
+    llm,
+    [python_repl_tool],
+    system_prompt=make_system_prompt(
+        "You can only generate charts. You are working with a researcher colleague."
+    ),
+)
+
+
+def chart_node(state: MessagesState) -> Command[Literal["researcher", END]]:
+    result = chart_agent.invoke(state)
+    goto = get_next_node(result["messages"][-1], "researcher")
+    # wrap in a human message, as not all providers allow
+    # AI message at the last position of the input messages list
+    result["messages"][-1] = HumanMessage(
+        content=result["messages"][-1].content, name="chart_generator"
+    )
+    return Command(
+        update={
+            # share internal message history of chart agent with other agents
+            "messages": result["messages"],
+        },
+        goto=goto,
+    )
+
+
+
+workflow = StateGraph(MessagesState)
+workflow.add_node("researcher", research_node)
+workflow.add_node("chart_generator", chart_node)
+
+workflow.add_edge(START, "researcher")
+graph = workflow.compile()
+
+
+events = graph.stream(
+    {
+        "messages": [
+            (
+                "user",
+                "First, get the UK's GDP over the past 5 years, then make a line chart of it. "
+                "Once you make the chart, finish.",
+            )
+        ],
+    },
+    # Maximum number of steps to take in the graph
+    {"recursion_limit": 150},
+)
+for s in events:
+    print(s)
+    print("----")
