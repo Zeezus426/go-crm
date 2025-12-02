@@ -8,3 +8,4 @@ class Task(models.Model):
     created_at = models.DateTimeField(default=now)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True, default=now)  

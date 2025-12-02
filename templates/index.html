@@ -1073,23 +1073,49 @@
             
             container.innerHTML = html;
             
-            // Add event listeners to the new buttons
-            document.querySelectorAll('.todo-complete-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const taskId = this.getAttribute('data-task-id');
-                    const taskElement = document.getElementById(`task-${taskId}`);
-                    
-                    // Toggle completed state
-                    taskElement.classList.toggle('todo-completed');
-                    
-                    // Update button text
-                    this.textContent = taskElement.classList.contains('todo-completed') ? 'Undo' : 'Complete';
-                    
-                    // Show success message
-                    const action = taskElement.classList.contains('todo-completed') ? 'completed' : 'marked as incomplete';
-                    showSuccessMessage(`Task ${action} successfully!`);
-                });
+            // Replace the existing todo-complete-btn event listener with this:
+        document.querySelectorAll('.todo-complete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const taskId = this.getAttribute('data-task-id');
+            const taskElement = document.getElementById(`task-${taskId}`);
+            const isCurrentlyCompleted = taskElement.classList.contains('todo-completed');
+            
+            // Determine which endpoint to call based on current state
+            const url = isCurrentlyCompleted 
+                ? `{% url 'undo_completed_task' 0 %}`.replace('0', taskId)
+                : `{% url 'is_completed' 0 %}`.replace('0', taskId);
+            
+            // Send request to toggle completion status
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                // Toggle completed state
+                taskElement.classList.toggle('todo-completed');
+                
+                // Update button text
+                this.textContent = taskElement.classList.contains('todo-completed') ? 'Undo' : 'Complete';
+                
+                // Show success message
+                const action = taskElement.classList.contains('todo-completed') ? 'completed' : 'marked as incomplete';
+                showSuccessMessage(`Task ${action} successfully!`);
+                } else {
+                    // Show error message
+                    alert(data.error || 'Error updating task status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating task status');
             });
+    });
+});
             
             document.querySelectorAll('.todo-delete-btn').forEach(button => {
                 button.addEventListener('click', function() {
