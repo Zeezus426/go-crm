@@ -9,7 +9,8 @@ from django.template.loader import get_template
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.db.models import Q
-
+from twilio.rest import Client
+from django.conf import settings
 
 def contact_list_view(request):
     """Main view for displaying and filtering the contact list.
@@ -298,6 +299,7 @@ def compose_sms_view(request, contact_id):
     """
     contact = get_object_or_404(Contact, pk=contact_id)
     return render(request, "message.html", {'contact': contact})
+
 
 
 def send_sms_message_view(request, contact_id):

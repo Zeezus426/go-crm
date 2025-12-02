@@ -387,6 +387,20 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* To-Do Tab Styles */
+        .todo-placeholder {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            font-size: 16px;
+        }
+        .todo-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #6c757d;
+            opacity: 0.5;
+        }
+
     </style>
 </head>
 <body>
@@ -396,6 +410,7 @@
         <div class="tabs">
             <div class="tab active" data-tab="contacts">Current Users</div>
             <div class="tab" data-tab="leads">AI Leads</div>
+            <div class="tab" data-tab="todo">To-Do</div> <!-- New tab added -->
         </div>
         <div class="filter-bar">
             <form method="GET" action="" class="filter-form">
@@ -588,6 +603,16 @@
             {% else %}
                 <div class="no-records">No AI leads have been generated yet. Click the button above to start generating leads.</div>
             {% endif %}
+        </div>
+
+        <!-- New To-Do Tab Content -->
+        <div id="todo" class="tab-content">
+            <h2>To-Do List</h2>
+            <div class="todo-placeholder">
+                <div class="todo-icon">✓</div>
+                <p>To-Do functionality will be implemented here.</p>
+                <p>This tab is currently empty.</p>
+            </div>
         </div>
     </div>
 
