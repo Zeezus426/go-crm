@@ -12,16 +12,16 @@ def add_task(request):
             task = Task()
             task.title = request.POST.get('title', '')
             task.description = request.POST.get('description', '')
+            
             created_at = request.POST.get('created_at')
             if created_at:
                 task.created_at = created_at
             else:
                 task.created_at = timezone.now()
-            created_by = request.POST.get('created_by')
+            
+            created_by = request.user
             if created_by:
                 task.created_by = created_by
-            else:
-                task.created_by = request.user.username if request.user.is_authenticated else "Anonymous"
             
             # Save the task to the database
             task.save()
@@ -42,7 +42,7 @@ def add_task(request):
         'error': 'Invalid request method'
     })
 
-def existing_tasks(request):
+def existing_tasks():
     """Return all tasks as JSON"""
     tasks = Task.objects.all().order_by('-created_at')
     
@@ -59,3 +59,20 @@ def existing_tasks(request):
         'success': True,
         'tasks': task_list
     })
+
+
+
+def del_tasks(request, contact_id):
+    if request.method == "POST":
+        try:
+            task = get_object_or_404(Task, id=contact_id)
+            task.delete()
+            return JsonResponse({
+                'success': True,
+                'message': 'Task deleted successfully'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })

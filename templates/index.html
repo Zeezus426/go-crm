@@ -388,19 +388,130 @@
         }
 
         /* To-Do Tab Styles */
-        .todo-placeholder {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
+        .todo-container {
+            max-width: 100%;
+        }
+        
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .todo-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        
+        .todo-list {
+            margin-top: 20px;
+        }
+        
+        .todo-item {
+            border-left: 4px solid #007bff;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 0 5px 5px 0;
+            position: relative;
+        }
+        
+        .todo-title {
+            font-weight: bold;
+            margin-bottom: 5px;
             font-size: 16px;
         }
-        .todo-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #6c757d;
-            opacity: 0.5;
+        
+        .todo-description {
+            margin-bottom: 10px;
+            color: #495057;
         }
-
+        
+        .todo-meta {
+            font-size: 12px;
+            color: #6c757d;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .todo-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        
+        .todo-complete-btn, .todo-delete-btn {
+            padding: 4px 8px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .todo-complete-btn {
+            background: #28a745;
+            color: white;
+        }
+        
+        .todo-delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .todo-complete-btn:hover, .todo-delete-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .todo-completed {
+            opacity: 0.6;
+            border-left-color: #6c757d;
+        }
+        
+        .todo-completed .todo-title {
+            text-decoration: line-through;
+        }
+        
+        .todo-loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .todo-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -410,7 +521,7 @@
         <div class="tabs">
             <div class="tab active" data-tab="contacts">Current Users</div>
             <div class="tab" data-tab="leads">AI Leads</div>
-            <div class="tab" data-tab="todo">To-Do</div> <!-- New tab added -->
+            <div class="tab" data-tab="todo">To-Do</div>
         </div>
         <div class="filter-bar">
             <form method="GET" action="" class="filter-form">
@@ -607,11 +718,37 @@
 
         <!-- New To-Do Tab Content -->
         <div id="todo" class="tab-content">
-            <h2>To-Do List</h2>
-            <div class="todo-placeholder">
-                <div class="todo-icon">✓</div>
-                <p>To-Do functionality will be implemented here.</p>
-                <p>This tab is currently empty.</p>
+            <div class="todo-container">
+                <div class="todo-header">
+                    <h2>To-Do List</h2>
+                    <button id="refresh-tasks" class="add-btn">Refresh Tasks</button>
+                </div>
+                
+                <!-- Add Task Form -->
+                <div class="todo-form">
+                    <h3>Add New Task</h3>
+                    <form id="add-task-form">
+                        <div class="form-group">
+                            <label for="task-title">Title</label>
+                            <input type="text" id="task-title" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-description">Description</label>
+                            <textarea id="task-description" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="add-btn">Add Task</button>
+                    </form>
+                </div>
+                
+                <!-- Tasks List -->
+                <div class="todo-list">
+                    <div id="tasks-container">
+                        <div class="todo-loading">
+                            <div class="loading"></div>
+                            <p>Loading tasks...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -626,6 +763,11 @@
                 tab.classList.add('active');
                 const tabId = tab.getAttribute('data-tab');
                 document.getElementById(tabId).classList.add('active');
+                
+                // Load tasks when the todo tab is clicked
+                if (tabId === 'todo') {
+                    loadTasks();
+                }
             });
         });
 
@@ -796,6 +938,52 @@
                     }
                 });
             }
+            
+            // Todo form submission
+            const todoForm = document.getElementById('add-task-form');
+            if (todoForm) {
+                todoForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const title = document.getElementById('task-title').value;
+                    const description = document.getElementById('task-description').value;
+                    
+                    // Send POST request to add_task endpoint
+                    fetch('/todo/add-task/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: `title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Clear form
+                            todoForm.reset();
+                            
+                            // Show success message
+                            showSuccessMessage('Task added successfully!');
+                            
+                            // Reload tasks
+                            loadTasks();
+                        } else {
+                            alert('Error adding task: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error adding task');
+                    });
+                });
+            }
+            
+            // Refresh tasks button
+            const refreshBtn = document.getElementById('refresh-tasks');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', loadTasks);
+            }
         });
 
         // Function to check if list is empty and show appropriate message
@@ -812,6 +1000,140 @@
                     tabContent.querySelector('.contacts-list').appendChild(noRecordsDiv);
                 }
             }
+        }
+        
+        // Function to load tasks from the server
+        function loadTasks() {
+            const container = document.getElementById('tasks-container');
+            
+            // Show loading state
+            container.innerHTML = `
+                <div class="todo-loading">
+                    <div class="loading"></div>
+                    <p>Loading tasks...</p>
+                </div>
+            `;
+            
+            // Fetch tasks from the API
+            fetch('/todo/existing-tasks/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderTasks(data.tasks);
+                    } else {
+                        container.innerHTML = `
+                            <div class="todo-empty">
+                                <p>Error loading tasks: ${data.error}</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    container.innerHTML = `
+                        <div class="todo-empty">
+                            <p>Error loading tasks: ${error.message}</p>
+                        </div>
+                    `;
+                });
+        }
+        
+        // Function to render tasks in the DOM
+        function renderTasks(tasks) {
+            const container = document.getElementById('tasks-container');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="todo-empty">
+                        <p>No tasks found. Add your first task above!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            tasks.forEach(task => {
+                const createdDate = new Date(task.created_at).toLocaleString();
+                
+                html += `
+                    <div class="todo-item" id="task-${task.id}">
+                        <div class="todo-actions">
+                            <button class="todo-complete-btn" data-task-id="${task.id}">Complete</button>
+                            <button class="todo-delete-btn" data-task-id="${task.id}">Delete</button>
+                        </div>
+                        <div class="todo-title">${task.title}</div>
+                        ${task.description ? `<div class="todo-description">${task.description}</div>` : ''}
+                        <div class="todo-meta">
+                            <span>Created: ${createdDate}</span>
+                            <span>By: ${task.created_by || 'Anonymous'}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Add event listeners to the new buttons
+            document.querySelectorAll('.todo-complete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-task-id');
+                    const taskElement = document.getElementById(`task-${taskId}`);
+                    
+                    // Toggle completed state
+                    taskElement.classList.toggle('todo-completed');
+                    
+                    // Update button text
+                    this.textContent = taskElement.classList.contains('todo-completed') ? 'Undo' : 'Complete';
+                    
+                    // Show success message
+                    const action = taskElement.classList.contains('todo-completed') ? 'completed' : 'marked as incomplete';
+                    showSuccessMessage(`Task ${action} successfully!`);
+                });
+            });
+            
+            document.querySelectorAll('.todo-delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const taskId = this.getAttribute('data-task-id');
+                    const taskElement = document.getElementById(`task-${taskId}`);
+                    const taskTitle = taskElement.querySelector('.todo-title').textContent;
+                    
+                    if (confirm(`Are you sure you want to delete the task "${taskTitle}"?`)) {
+                        // Send request to delete the task
+                        fetch(`/delete_task/${taskId}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Remove the task from DOM
+                                taskElement.remove();
+                                
+                                // Show success message
+                                showSuccessMessage('Task deleted successfully!');
+                                
+                                // If no tasks left, show empty message
+                                if (document.querySelectorAll('.todo-item').length === 0) {
+                                    document.getElementById('tasks-container').innerHTML = `
+                                        <div class="todo-empty">
+                                            <p>No tasks found. Add your first task above!</p>
+                                        </div>
+                                    `;
+                                }
+                            } else {
+                                alert('Error deleting task: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error deleting task');
+                        });
+                    }
+                });
+            });
         }
     </script>
 </body>
