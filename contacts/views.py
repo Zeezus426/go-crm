@@ -428,3 +428,12 @@ def contact_detail_form_view(request, contact_id):
         'form': form,
     }
     return render(request, 'contact_detail.html', context)
+
+
+def communication_logs_view(request):
+    if request.method == "POST":
+        email_logs = sent_emails.objects.all().order_by('-sent_at')
+        sms_logs = sent_sms.objects.all().order_by('-sent_at')
+        email_list = [{"id": e.id, "contact": e.contact.Full_name, "subject": e.subject, "message": e.message, "sent_at": e.sent_at} for e in email_logs]
+        sms_list = [{"id": s.id, "contact": s.contact.Full_name, "body": s.body, "sent_at": s.sent_at} for s in sms_logs]
+        return JsonResponse({"emails": email_list, "sms": sms_list})

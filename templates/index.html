@@ -11,7 +11,7 @@
             background-color: #f5f5f5;
         }
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
@@ -22,7 +22,6 @@
             display: flex;
             border-bottom: 1px solid #ddd;
             background: #f8f9fa;
-            overflow-x: auto;
         }
         .tab {
             padding: 15px 25px;
@@ -34,8 +33,6 @@
             margin-right: 5px;
             position: relative;
             top: 1px;
-            white-space: nowrap;
-            flex-shrink: 0;
         }
         .tab.active {
             background: white;
@@ -390,597 +387,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* New Styles for Communication Logs Tab */
-        .logs-container {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .logs-filters {
-            flex: 0 0 250px;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            height: fit-content;
-        }
-        
-        .logs-list {
-            flex: 1;
-        }
-        
-        .log-item {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #007bff;
-        }
-        
-        .log-item.sms {
-            border-left-color: #28a745;
-        }
-        
-        .log-item.email {
-            border-left-color: #17a2b8;
-        }
-        
-        .log-item.failed {
-            border-left-color: #dc3545;
-        }
-        
-        .log-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        
-        .log-type {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .log-type.sms {
-            background: #28a745;
-            color: white;
-        }
-        
-        .log-type.email {
-            background: #17a2b8;
-            color: white;
-        }
-        
-        .log-status {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        
-        .log-status.sent {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .log-status.delivered {
-            background: #c3e6cb;
-            color: #155724;
-        }
-        
-        .log-status.failed {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        
-        .log-status.pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .log-details {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #dee2e6;
-        }
-        
-        .log-detail {
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        
-        .log-detail strong {
-            color: #495057;
-        }
-        
-        .log-content {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 10px;
-            font-family: monospace;
-            font-size: 13px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .log-actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .resend-btn {
-            padding: 5px 10px;
-            background: #6f42c1;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .resend-btn:hover {
-            background: #5a2d91;
-        }
-        
-        .view-btn {
-            padding: 5px 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .view-btn:hover {
-            background: #0056b3;
-        }
-        
-        .filter-group-small {
-            margin-bottom: 15px;
-        }
-        
-        .filter-group-small label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        
-        .filter-group-small select,
-        .filter-group-small input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #dee2e6;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007bff;
-            margin: 5px 0;
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        /* Export Button */
-        .export-btn {
-            display: inline-block;
-            margin: 15px 0;
-            padding: 10px 15px;
-            background: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .export-btn:hover {
-            background: #218838;
-        }
-
-        /* Todo Tab Styles */
-        .todo-container {
-            display: flex;
-            gap: 30px;
-        }
-        
-        .todo-form-container {
-            flex: 0 0 350px;
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 10px;
-            height: fit-content;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .todo-form-container h3 {
-            margin-top: 0;
-            color: #495057;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #007bff;
-        }
-        
-        .todo-list-container {
-            flex: 1;
-        }
-        
-        .todo-form-group {
-            margin-bottom: 20px;
-        }
-        
-        .todo-form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #495057;
-            font-size: 14px;
-        }
-        
-        .todo-form-group input,
-        .todo-form-group textarea,
-        .todo-form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-        
-        .todo-form-group input:focus,
-        .todo-form-group textarea:focus,
-        .todo-form-group select:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-        }
-        
-        .todo-form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-            font-family: inherit;
-        }
-        
-        .submit-todo-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(45deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .submit-todo-btn:hover {
-            background: linear-gradient(45deg, #218838, #1aa179);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-        
-        .submit-todo-btn:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        /* Todo Item Styles */
-        .todo-item {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 5px solid #007bff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .todo-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        
-        .todo-item.completed {
-            border-left-color: #28a745;
-            background: #f8fff9;
-            opacity: 0.8;
-        }
-        
-        .todo-item.high-priority {
-            border-left-color: #dc3545;
-            background: #fff5f5;
-        }
-        
-        .todo-item.medium-priority {
-            border-left-color: #ffc107;
-            background: #fffcf5;
-        }
-        
-        .todo-item.low-priority {
-            border-left-color: #6f42c1;
-            background: #f8f5ff;
-        }
-        
-        .todo-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-        
-        .todo-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #495057;
-            margin: 0;
-            flex: 1;
-        }
-        
-        .todo-item.completed .todo-title {
-            text-decoration: line-through;
-            color: #6c757d;
-        }
-        
-        .todo-priority {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-left: 10px;
-        }
-        
-        .priority-high {
-            background: #dc3545;
-            color: white;
-        }
-        
-        .priority-medium {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .priority-low {
-            background: #6f42c1;
-            color: white;
-        }
-        
-        .todo-description {
-            color: #6c757d;
-            margin-bottom: 15px;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-        
-        .todo-item.completed .todo-description {
-            opacity: 0.7;
-        }
-        
-        .todo-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e9ecef;
-            font-size: 12px;
-            color: #868e96;
-        }
-        
-        .todo-date {
-            font-style: italic;
-        }
-        
-        .todo-category {
-            background: #e9ecef;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-        }
-        
-        .todo-actions {
-            display: flex;
-            gap: 8px;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-        
-        .todo-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        
-        .todo-checkbox input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        
-        .todo-checkbox-label {
-            font-size: 14px;
-            color: #495057;
-            cursor: pointer;
-        }
-        
-        .complete-btn {
-            padding: 6px 12px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .complete-btn:hover {
-            background: #218838;
-        }
-        
-        .complete-btn.completed {
-            background: #6c757d;
-        }
-        
-        .edit-todo-btn {
-            padding: 6px 12px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .edit-todo-btn:hover {
-            background: #0056b3;
-        }
-        
-        .delete-todo-btn {
-            padding: 6px 12px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .delete-todo-btn:hover {
-            background: #c82333;
-        }
-        
-        /* Todo Filters */
-        .todo-filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .todo-filter-group {
-            flex: 1;
-            min-width: 150px;
-        }
-        
-        .todo-filter-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            font-size: 13px;
-            color: #495057;
-        }
-        
-        .todo-filter-group select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        .todo-search {
-            flex: 2;
-        }
-        
-        .todo-search input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        /* Todo Stats */
-        .todo-stats {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .todo-stat {
-            flex: 1;
-            min-width: 120px;
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border: 1px solid #e9ecef;
-        }
-        
-        .todo-stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #007bff;
-            margin: 5px 0;
-        }
-        
-        .todo-stat-label {
-            font-size: 12px;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .todo-stat.completed .todo-stat-value {
-            color: #28a745;
-        }
-        
-        .todo-stat.pending .todo-stat-value {
-            color: #ffc107;
-        }
-        
-        .todo-stat.high .todo-stat-value {
-            color: #dc3545;
-        }
-
     </style>
 </head>
 <body>
@@ -990,8 +396,6 @@
         <div class="tabs">
             <div class="tab active" data-tab="contacts">Current Users</div>
             <div class="tab" data-tab="leads">AI Leads</div>
-            <div class="tab" data-tab="logs">Communication Logs</div>
-            <div class="tab" data-tab="todo">To-Do List</div>
         </div>
         <div class="filter-bar">
             <form method="GET" action="" class="filter-form">
@@ -1063,8 +467,6 @@
                 {% endif %}
             </form>
         </div>
-        
-        <!-- Current Users Tab -->
         <div id="contacts" class="tab-content active">
             <h2>Current Leads</h2>
             {% if contacts %}
@@ -1102,7 +504,6 @@
             <a href="{% url 'adding_contact' %}" class="add-btn">Add New User</a>
         </div>
 
-        <!-- AI Leads Tab -->
         <div id="leads" class="tab-content">
             <h2>AI Generated Leads <span class="ai-badge">AI</span></h2>
             
@@ -1188,331 +589,6 @@
                 <div class="no-records">No AI leads have been generated yet. Click the button above to start generating leads.</div>
             {% endif %}
         </div>
-
-        <!-- Communication Logs Tab -->
-        <div id="logs" class="tab-content">
-            <h2>Communication Logs</h2>
-            
-            <!-- Stats Summary -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value">{{ total_sent }}</div>
-                    <div class="stat-label">Total Sent</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{ sms_sent }}</div>
-                    <div class="stat-label">SMS Sent</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{ emails_sent }}</div>
-                    <div class="stat-label">Emails Sent</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{ success_rate }}%</div>
-                    <div class="stat-label">Success Rate</div>
-                </div>
-            </div>
-            
-            <div class="logs-container">
-                <!-- Filters Sidebar -->
-                <div class="logs-filters">
-                    <h3 style="margin-top: 0;">Filter Logs</h3>
-                    
-                    <div class="filter-group-small">
-                        <label for="log_type">Communication Type:</label>
-                        <select id="log_type" name="log_type">
-                            <option value="">All Types</option>
-                            <option value="sms">SMS</option>
-                            <option value="email">Email</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group-small">
-                        <label for="log_status">Status:</label>
-                        <select id="log_status" name="log_status">
-                            <option value="">All Statuses</option>
-                            <option value="sent">Sent</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="failed">Failed</option>
-                            <option value="pending">Pending</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group-small">
-                        <label for="log_date_from">Date From:</label>
-                        <input type="date" id="log_date_from" name="log_date_from">
-                    </div>
-                    
-                    <div class="filter-group-small">
-                        <label for="log_date_to">Date To:</label>
-                        <input type="date" id="log_date_to" name="log_date_to">
-                    </div>
-                    
-                    <button type="button" class="apply-btn" style="width: 100%;" onclick="filterLogs()">
-                        Apply Filters
-                    </button>
-                    
-                    <button type="button" class="clear-btn" style="width: 100%; margin-top: 10px;" onclick="clearLogFilters()">
-                        Clear Filters
-                    </button>
-                </div>
-                
-                <!-- Logs List -->
-                <div class="logs-list">
-                    <button class="export-btn" onclick="exportLogs()">Export Logs to CSV</button>
-                    
-                    {% if communication_logs %}
-                        <div id="logsList">
-                            {% for log in communication_logs %}
-                                <div class="log-item {{ log.communication_type }} {% if log.status == 'failed' %}failed{% endif %}" 
-                                     data-type="{{ log.communication_type }}" 
-                                     data-status="{{ log.status }}"
-                                     data-date="{{ log.sent_at|date:'Y-m-d' }}">
-                                    <div class="log-header">
-                                        <div>
-                                            <span class="log-type {{ log.communication_type }}">
-                                                {{ log.communication_type|upper }}
-                                            </span>
-                                            <span class="log-status {{ log.status }}">
-                                                {{ log.status|title }}
-                                            </span>
-                                        </div>
-                                        <div style="font-size: 12px; color: #6c757d;">
-                                            {{ log.sent_at|date:"M d, Y H:i" }}
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="contact-field">
-                                        <strong>To:</strong> 
-                                        {% if log.contact %}
-                                            {{ log.contact.Full_name|default:log.contact.email }} 
-                                            ({{ log.contact.email }})
-                                        {% else %}
-                                            {{ log.recipient }}
-                                        {% endif %}
-                                    </div>
-                                    
-                                    {% if log.subject %}
-                                    <div class="contact-field">
-                                        <strong>Subject:</strong> {{ log.subject }}
-                                    </div>
-                                    {% endif %}
-                                    
-                                    <div class="log-details">
-                                        <div class="log-detail">
-                                            <strong>Message Preview:</strong>
-                                            <div class="log-content">
-                                                {{ log.message_content|truncatechars:200 }}
-                                            </div>
-                                        </div>
-                                        
-                                        {% if log.error_message %}
-                                        <div class="log-detail">
-                                            <strong>Error:</strong> 
-                                            <span style="color: #dc3545;">{{ log.error_message }}</span>
-                                        </div>
-                                        {% endif %}
-                                        
-                                        <div class="log-actions">
-                                            {% if log.communication_type == 'email' %}
-                                                <a href="{% url 'view_email_log' log.id %}" class="view-btn">View Full Email</a>
-                                            {% endif %}
-                                            
-                                            {% if log.status == 'failed' %}
-                                                <button class="resend-btn" onclick="resendCommunication('{{ log.id }}')">
-                                                    Retry Send
-                                                </button>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="no-records">No communication logs found.</div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <!-- New: To-Do List Tab -->
-        <div id="todo" class="tab-content">
-            <h2>To-Do List</h2>
-            
-            <!-- Todo Stats -->
-            <div class="todo-stats">
-                <div class="todo-stat">
-                    <div class="todo-stat-value">{{ total_tasks }}</div>
-                    <div class="todo-stat-label">Total Tasks</div>
-                </div>
-                <div class="todo-stat pending">
-                    <div class="todo-stat-value">{{ pending_tasks }}</div>
-                    <div class="todo-stat-label">Pending</div>
-                </div>
-                <div class="todo-stat completed">
-                    <div class="todo-stat-value">{{ completed_tasks }}</div>
-                    <div class="todo-stat-label">Completed</div>
-                </div>
-                <div class="todo-stat high">
-                    <div class="todo-stat-value">{{ high_priority_tasks }}</div>
-                    <div class="todo-stat-label">High Priority</div>
-                </div>
-            </div>
-            
-            <div class="todo-container">
-                <!-- Todo Form -->
-                <div class="todo-form-container">
-                    <h3>Add New Task</h3>
-                    <form id="todoForm" method="POST" action="{% url 'add_task' %}">
-                        {% csrf_token %}
-                        <div class="todo-form-group">
-                            <label for="title">Task Title *</label>
-                            <input type="text" id="title" name="title" required 
-                                   placeholder="Enter task title" maxlength="200">
-                        </div>
-                        
-                        <div class="todo-form-group">
-                            <label for="description">Description</label>
-                            <textarea id="description" name="description" 
-                                      placeholder="Enter task description (optional)" 
-                                      rows="4"></textarea>
-                        </div>
-                        
-                        <div class="todo-form-group">
-                            <label for="priority">Priority</label>
-                            <select id="priority" name="priority">
-                                <option value="low">Low Priority</option>
-                                <option value="medium" selected>Medium Priority</option>
-                                <option value="high">High Priority</option>
-                            </select>
-                        </div>
-                        
-                        <div class="todo-form-group">
-                            <label for="category">Category</label>
-                            <select id="category" name="category">
-                                <option value="general">General</option>
-                                <option value="work">Work</option>
-                                <option value="personal">Personal</option>
-                                <option value="urgent">Urgent</option>
-                                <option value="follow_up">Follow-up</option>
-                            </select>
-                        </div>
-                        
-                        <div class="todo-form-group">
-                            <label for="due_date">Due Date</label>
-                            <input type="date" id="due_date" name="due_date">
-                        </div>
-                        
-                        <div class="todo-checkbox">
-                            <input type="checkbox" id="completed" name="completed">
-                            <label for="completed" class="todo-checkbox-label">Mark as completed</label>
-                        </div>
-                        
-                        <button type="submit" class="submit-todo-btn" id="submitTodoBtn">
-                            Add Task
-                        </button>
-                    </form>
-                </div>
-                
-                <!-- Todo List -->
-                <div class="todo-list-container">
-                    <!-- Todo Filters -->
-                    <div class="todo-filters">
-                        <div class="todo-search todo-filter-group">
-                            <label for="todoSearch">Search Tasks</label>
-                            <input type="text" id="todoSearch" placeholder="Search tasks...">
-                        </div>
-                        
-                        <div class="todo-filter-group">
-                            <label for="filterStatus">Status</label>
-                            <select id="filterStatus">
-                                <option value="all">All Statuses</option>
-                                <option value="pending">Pending</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                        </div>
-                        
-                        <div class="todo-filter-group">
-                            <label for="filterPriority">Priority</label>
-                            <select id="filterPriority">
-                                <option value="all">All Priorities</option>
-                                <option value="high">High</option>
-                                <option value="medium">Medium</option>
-                                <option value="low">Low</option>
-                            </select>
-                        </div>
-                        
-                        <div class="todo-filter-group">
-                            <label for="filterCategory">Category</label>
-                            <select id="filterCategory">
-                                <option value="all">All Categories</option>
-                                <option value="general">General</option>
-                                <option value="work">Work</option>
-                                <option value="personal">Personal</option>
-                                <option value="urgent">Urgent</option>
-                                <option value="follow_up">Follow-up</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    {% if tasks %}
-                        <div id="todoList">
-                            {% for task in tasks %}
-                                <div class="todo-item {% if task.completed %}completed{% endif %} {{ task.priority }}-priority" 
-                                     data-id="{{ task.id }}"
-                                     data-status="{% if task.completed %}completed{% else %}pending{% endif %}"
-                                     data-priority="{{ task.priority }}"
-                                     data-category="{{ task.category|default:'general' }}">
-                                    
-                                    <div class="todo-actions">
-                                        <button class="complete-btn {% if task.completed %}completed{% endif %}" 
-                                                onclick="toggleTaskComplete('{{ task.id }}')">
-                                            {% if task.completed %}Undo{% else %}Complete{% endif %}
-                                        </button>
-                                        <button class="edit-todo-btn" onclick="editTask('{{ task.id }}')">Edit</button>
-                                        <button class="delete-todo-btn" onclick="deleteTask('{{ task.id }}')">Delete</button>
-                                    </div>
-                                    
-                                    <div class="todo-header">
-                                        <h3 class="todo-title">{{ task.title }}</h3>
-                                        <span class="todo-priority priority-{{ task.priority }}">
-                                            {{ task.priority|title }}
-                                        </span>
-                                    </div>
-                                    
-                                    {% if task.description %}
-                                    <div class="todo-description">
-                                        {{ task.description|linebreaks }}
-                                    </div>
-                                    {% endif %}
-                                    
-                                    <div class="todo-meta">
-                                        <div>
-                                            {% if task.category %}
-                                            <span class="todo-category">{{ task.category|title }}</span>
-                                            {% endif %}
-                                            
-                                            {% if task.due_date %}
-                                            <span class="todo-date" style="margin-left: 10px;">
-                                                Due: {{ task.due_date|date:"M d, Y" }}
-                                            </span>
-                                            {% endif %}
-                                        </div>
-                                        <div>
-                                            <span class="todo-date">
-                                                Created: {{ task.created_at|date:"M d, Y" }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="no-records">No tasks found. Add your first task using the form on the left!</div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -1533,20 +609,11 @@
             button.addEventListener('click', function() {
                 const contactId = this.getAttribute('data-contact-id') || this.getAttribute('data-lead-id');
                 const contactType = this.getAttribute('data-contact-type') || this.getAttribute('data-lead-type');
-                const contactElement = this.closest('.contact-item');
-                let contactName = 'this item';
-                
-                if (contactElement) {
-                    const nameElement = contactElement.querySelector('strong');
-                    if (nameElement && nameElement.nextSibling) {
-                        contactName = nameElement.nextSibling.textContent.trim();
-                    }
-                }
+                const contactName = this.closest('.contact-item').querySelector('strong').nextSibling.textContent.trim();
                 
                 if (confirm(`Are you sure you want to delete ${contactName}?`)) {
-                    const url = contactType === 'ai_lead' ? `/delete-ai-lead/${contactId}/` : `/delete/${contactId}/`;
-                    
-                    fetch(url, {
+                    // Send AJAX request to delete the contact
+                    fetch(`/delete/${contactId}/`, {
                         method: 'POST',
                         headers: {
                             'X-CSRFToken': getCookie('csrftoken'),
@@ -1556,16 +623,22 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            // Remove the contact item from DOM
+                            const contactElement = document.getElementById(`contact-${contactId}`) || document.getElementById(`ai-lead-${contactId}`);
                             contactElement.remove();
+                            
+                            // Show success message
                             showSuccessMessage(`${contactName} has been deleted successfully.`);
+                            
+                            // If no contacts left, show "no records" message
                             checkEmptyList(contactType);
                         } else {
-                            alert('Error deleting item: ' + data.error);
+                            alert('Error deleting contact: ' + data.error);
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Error deleting item');
+                        alert('Error deleting contact');
                     });
                 }
             });
@@ -1593,6 +666,7 @@
             successMessage.textContent = message;
             successMessage.style.display = 'block';
             
+            // Hide message after 3 seconds
             setTimeout(() => {
                 successMessage.style.display = 'none';
             }, 3000);
@@ -1604,10 +678,12 @@
             const status = document.getElementById('generateStatus');
             const statusText = document.getElementById('statusText');
             
+            // Show loading state
             btn.disabled = true;
             status.style.display = 'block';
             statusText.textContent = 'Initializing AI generation...';
             
+            // Simulate AI generation process
             setTimeout(() => {
                 statusText.textContent = 'Analyzing market data...';
             }, 1000);
@@ -1621,6 +697,7 @@
             }, 4000);
             
             setTimeout(() => {
+                // Send request to backend to create AI lead
                 fetch('/generate-ai-lead/', {
                     method: 'POST',
                     headers: {
@@ -1632,6 +709,7 @@
                 .then(data => {
                     if (data.success) {
                         showSuccessMessage('AI lead generated successfully!');
+                        // Reload the page to show the new lead
                         setTimeout(() => {
                             window.location.reload();
                         }, 1500);
@@ -1644,484 +722,72 @@
                     alert('Error generating AI lead');
                 })
                 .finally(() => {
+                    // Reset button state
                     btn.disabled = false;
                     status.style.display = 'none';
                 });
             }, 5500);
         }
 
-        // Filter logs functionality
-        function filterLogs() {
-            const typeFilter = document.getElementById('log_type').value;
-            const statusFilter = document.getElementById('log_status').value;
-            const dateFrom = document.getElementById('log_date_from').value;
-            const dateTo = document.getElementById('log_date_to').value;
+        // Add this to your existing script section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Real-time search debounce
+            let searchTimeout;
+            const searchInput = document.getElementById('search');
             
-            const logItems = document.querySelectorAll('.log-item');
-            
-            logItems.forEach(item => {
-                let show = true;
-                
-                if (typeFilter && item.dataset.type !== typeFilter) {
-                    show = false;
-                }
-                
-                if (statusFilter && item.dataset.status !== statusFilter) {
-                    show = false;
-                }
-                
-                if (dateFrom && item.dataset.date < dateFrom) {
-                    show = false;
-                }
-                
-                if (dateTo && item.dataset.date > dateTo) {
-                    show = false;
-                }
-                
-                item.style.display = show ? 'block' : 'none';
-            });
-        }
-        
-        function clearLogFilters() {
-            document.getElementById('log_type').value = '';
-            document.getElementById('log_status').value = '';
-            document.getElementById('log_date_from').value = '';
-            document.getElementById('log_date_to').value = '';
-            
-            const logItems = document.querySelectorAll('.log-item');
-            logItems.forEach(item => {
-                item.style.display = 'block';
-            });
-        }
-        
-        function resendCommunication(logId) {
-            if (confirm('Resend this communication?')) {
-                fetch(`/resend-communication/${logId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken'),
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showSuccessMessage('Communication resent successfully!');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1500);
-                    } else {
-                        alert('Error resending communication: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error resending communication');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        this.form.submit();
+                    }, 500);
                 });
             }
-        }
-        
-        function exportLogs() {
-            fetch('/export-logs/', {
-                method: 'GET',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-            })
-            .then(response => response.blob())
-            .then(blob => {
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'communication_logs.csv';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error exporting logs');
-            });
-        }
-
-        // Real-time search debounce
-        let searchTimeout;
-        const searchInput = document.getElementById('search');
-        
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
+            
+            // Auto-submit when select filters change
+            const leadClassSelect = document.getElementById('lead_class');
+            const sortBySelect = document.getElementById('sort_by');
+            
+            if (leadClassSelect) {
+                leadClassSelect.addEventListener('change', function() {
                     this.form.submit();
-                }, 500);
-            });
-        }
-        
-        // Auto-submit when select filters change
-        const leadClassSelect = document.getElementById('lead_class');
-        const sortBySelect = document.getElementById('sort_by');
-        
-        if (leadClassSelect) {
-            leadClassSelect.addEventListener('change', function() {
-                this.form.submit();
-            });
-        }
-        
-        if (sortBySelect) {
-            sortBySelect.addEventListener('change', function() {
-                this.form.submit();
-            });
-        }
-        
-        // Show loading state for filters
-        const filterForm = document.querySelector('.filter-form');
-        if (filterForm) {
-            filterForm.addEventListener('submit', function() {
-                const applyBtn = this.querySelector('.apply-btn');
-                if (applyBtn) {
-                    applyBtn.innerHTML = 'Applying...';
-                    applyBtn.disabled = true;
-                }
-            });
-        }
-
-        // Function to check if list is empty
-        function checkEmptyList(contactType) {
-            let tabContent;
-            if (contactType === 'contact') {
-                tabContent = document.getElementById('contacts');
-            } else if (contactType === 'ai_lead') {
-                tabContent = document.getElementById('leads');
-            } else {
-                return;
+                });
             }
             
-            if (!tabContent) return;
+            if (sortBySelect) {
+                sortBySelect.addEventListener('change', function() {
+                    this.form.submit();
+                });
+            }
             
+            // Show loading state
+            const filterForm = document.querySelector('.filter-form');
+            if (filterForm) {
+                filterForm.addEventListener('submit', function() {
+                    const applyBtn = this.querySelector('.apply-btn');
+                    if (applyBtn) {
+                        applyBtn.innerHTML = 'Applying...';
+                        applyBtn.disabled = true;
+                    }
+                });
+            }
+        });
+
+        // Function to check if list is empty and show appropriate message
+        function checkEmptyList(contactType) {
+            const tabContent = document.getElementById(contactType === 'contact' ? 'contacts' : 'leads');
             const contactItems = tabContent.querySelectorAll('.contact-item');
             const noRecords = tabContent.querySelector('.no-records');
             
-            if (contactItems.length === 0 && !noRecords) {
-                const contactsList = tabContent.querySelector('.contacts-list');
-                if (contactsList) {
+            if (contactItems.length === 0) {
+                if (!noRecords) {
                     const noRecordsDiv = document.createElement('div');
                     noRecordsDiv.className = 'no-records';
                     noRecordsDiv.textContent = contactType === 'contact' ? 'No current users found.' : 'No AI leads found.';
-                    contactsList.appendChild(noRecordsDiv);
+                    tabContent.querySelector('.contacts-list').appendChild(noRecordsDiv);
                 }
             }
         }
-
-        // ======================
-        // TODO LIST FUNCTIONALITY
-        // ======================
-
-        // Add task with AJAX
-        document.getElementById('todoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitTodoBtn');
-            const originalText = submitBtn.textContent;
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Adding Task...';
-            
-            // Get form data
-            const formData = new FormData(this);
-            
-            // Send AJAX request
-            fetch(this.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showSuccessMessage('Task added successfully!');
-                    
-                    // Reset form
-                    this.reset();
-                    
-                    // Add new task to the list without reloading
-                    addTaskToDOM(data.task);
-                    
-                    // Update stats
-                    updateTodoStats();
-                } else {
-                    alert('Error adding task: ' + (data.error || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error adding task');
-            })
-            .finally(() => {
-                // Restore button state
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalText;
-            });
-        });
-
-        // Function to add task to DOM
-        function addTaskToDOM(task) {
-            const todoList = document.getElementById('todoList');
-            const noRecords = document.querySelector('.no-records');
-            
-            // Remove "no records" message if it exists
-            if (noRecords && noRecords.parentElement === todoList?.parentElement) {
-                noRecords.remove();
-            }
-            
-            // Create task element
-            const taskElement = document.createElement('div');
-            taskElement.className = `todo-item ${task.completed ? 'completed' : ''} ${task.priority}-priority`;
-            taskElement.setAttribute('data-id', task.id);
-            taskElement.setAttribute('data-status', task.completed ? 'completed' : 'pending');
-            taskElement.setAttribute('data-priority', task.priority);
-            taskElement.setAttribute('data-category', task.category || 'general');
-            
-            taskElement.innerHTML = `
-                <div class="todo-actions">
-                    <button class="complete-btn ${task.completed ? 'completed' : ''}" 
-                            onclick="toggleTaskComplete('${task.id}')">
-                        ${task.completed ? 'Undo' : 'Complete'}
-                    </button>
-                    <button class="edit-todo-btn" onclick="editTask('${task.id}')">Edit</button>
-                    <button class="delete-todo-btn" onclick="deleteTask('${task.id}')">Delete</button>
-                </div>
-                
-                <div class="todo-header">
-                    <h3 class="todo-title">${task.title}</h3>
-                    <span class="todo-priority priority-${task.priority}">
-                        ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                    </span>
-                </div>
-                
-                ${task.description ? `<div class="todo-description">${task.description.replace(/\n/g, '<br>')}</div>` : ''}
-                
-                <div class="todo-meta">
-                    <div>
-                        ${task.category ? `<span class="todo-category">${task.category.charAt(0).toUpperCase() + task.category.slice(1)}</span>` : ''}
-                        
-                        ${task.due_date ? `<span class="todo-date" style="margin-left: 10px;">
-                            Due: ${new Date(task.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </span>` : ''}
-                    </div>
-                    <div>
-                        <span class="todo-date">
-                            Created: ${new Date(task.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                        </span>
-                    </div>
-                </div>
-            `;
-            
-            // Add to beginning of list
-            if (todoList) {
-                todoList.insertBefore(taskElement, todoList.firstChild);
-            } else {
-                // Create todoList if it doesn't exist
-                const todoListContainer = document.querySelector('.todo-list-container');
-                const newTodoList = document.createElement('div');
-                newTodoList.id = 'todoList';
-                newTodoList.appendChild(taskElement);
-                todoListContainer.appendChild(newTodoList);
-            }
-        }
-
-        // Toggle task completion
-        function toggleTaskComplete(taskId) {
-            fetch(`/toggle-task/${taskId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const taskElement = document.querySelector(`.todo-item[data-id="${taskId}"]`);
-                    const completeBtn = taskElement.querySelector('.complete-btn');
-                    const title = taskElement.querySelector('.todo-title');
-                    
-                    if (data.completed) {
-                        taskElement.classList.add('completed');
-                        completeBtn.textContent = 'Undo';
-                        completeBtn.classList.add('completed');
-                        title.style.textDecoration = 'line-through';
-                        taskElement.setAttribute('data-status', 'completed');
-                    } else {
-                        taskElement.classList.remove('completed');
-                        completeBtn.textContent = 'Complete';
-                        completeBtn.classList.remove('completed');
-                        title.style.textDecoration = 'none';
-                        taskElement.setAttribute('data-status', 'pending');
-                    }
-                    
-                    updateTodoStats();
-                } else {
-                    alert('Error updating task: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error updating task');
-            });
-        }
-
-        // Delete task
-        function deleteTask(taskId) {
-            if (confirm('Are you sure you want to delete this task?')) {
-                fetch(`/delete-task/${taskId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken'),
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const taskElement = document.querySelector(`.todo-item[data-id="${taskId}"]`);
-                        taskElement.remove();
-                        
-                        showSuccessMessage('Task deleted successfully!');
-                        updateTodoStats();
-                        
-                        // Show "no records" message if no tasks left
-                        const todoList = document.getElementById('todoList');
-                        if (todoList && todoList.children.length === 0) {
-                            const noRecordsDiv = document.createElement('div');
-                            noRecordsDiv.className = 'no-records';
-                            noRecordsDiv.textContent = 'No tasks found. Add your first task using the form on the left!';
-                            todoList.parentElement.appendChild(noRecordsDiv);
-                        }
-                    } else {
-                        alert('Error deleting task: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting task');
-                });
-            }
-        }
-
-        // Edit task (placeholder - you'll need to implement this)
-        function editTask(taskId) {
-            // Get task data
-            const taskElement = document.querySelector(`.todo-item[data-id="${taskId}"]`);
-            const title = taskElement.querySelector('.todo-title').textContent;
-            const description = taskElement.querySelector('.todo-description')?.textContent || '';
-            const priority = taskElement.dataset.priority;
-            const category = taskElement.dataset.category;
-            
-            // Pre-fill form
-            document.getElementById('title').value = title;
-            document.getElementById('description').value = description;
-            document.getElementById('priority').value = priority;
-            document.getElementById('category').value = category;
-            
-            // Change form to edit mode
-            const form = document.getElementById('todoForm');
-            const submitBtn = document.getElementById('submitTodoBtn');
-            
-            // You'll need to implement the update endpoint
-            // For now, just scroll to form
-            document.querySelector('.todo-form-container').scrollIntoView({ behavior: 'smooth' });
-            alert('Edit functionality coming soon! For now, delete and recreate the task with correct details.');
-        }
-
-        // Update todo stats (simulated)
-        function updateTodoStats() {
-            // This would normally make an AJAX call to get updated stats
-            // For now, we'll update locally
-            const todoItems = document.querySelectorAll('.todo-item');
-            const total = todoItems.length;
-            const completed = document.querySelectorAll('.todo-item.completed').length;
-            const pending = total - completed;
-            const highPriority = document.querySelectorAll('.todo-item[data-priority="high"]').length;
-            
-            // Update displayed stats
-            const statElements = document.querySelectorAll('.todo-stat-value');
-            if (statElements.length >= 4) {
-                statElements[0].textContent = total;
-                statElements[1].textContent = pending;
-                statElements[2].textContent = completed;
-                statElements[3].textContent = highPriority;
-            }
-        }
-
-        // Todo filtering
-        document.getElementById('todoSearch').addEventListener('input', function() {
-            filterTodoItems();
-        });
-        
-        document.getElementById('filterStatus').addEventListener('change', function() {
-            filterTodoItems();
-        });
-        
-        document.getElementById('filterPriority').addEventListener('change', function() {
-            filterTodoItems();
-        });
-        
-        document.getElementById('filterCategory').addEventListener('change', function() {
-            filterTodoItems();
-        });
-        
-        function filterTodoItems() {
-            const searchTerm = document.getElementById('todoSearch').value.toLowerCase();
-            const statusFilter = document.getElementById('filterStatus').value;
-            const priorityFilter = document.getElementById('filterPriority').value;
-            const categoryFilter = document.getElementById('filterCategory').value;
-            
-            const todoItems = document.querySelectorAll('.todo-item');
-            
-            todoItems.forEach(item => {
-                const title = item.querySelector('.todo-title').textContent.toLowerCase();
-                const description = item.querySelector('.todo-description')?.textContent.toLowerCase() || '';
-                const status = item.dataset.status;
-                const priority = item.dataset.priority;
-                const category = item.dataset.category;
-                
-                let show = true;
-                
-                // Search filter
-                if (searchTerm && !title.includes(searchTerm) && !description.includes(searchTerm)) {
-                    show = false;
-                }
-                
-                // Status filter
-                if (statusFilter !== 'all' && status !== statusFilter) {
-                    show = false;
-                }
-                
-                // Priority filter
-                if (priorityFilter !== 'all' && priority !== priorityFilter) {
-                    show = false;
-                }
-                
-                // Category filter
-                if (categoryFilter !== 'all' && category !== categoryFilter) {
-                    show = false;
-                }
-                
-                item.style.display = show ? 'block' : 'none';
-            });
-        }
-
-        // Initialize todo filtering
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.getElementById('todo')) {
-                filterTodoItems();
-            }
-        });
-
     </script>
 </body>
 </html>

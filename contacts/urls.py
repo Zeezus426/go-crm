@@ -28,4 +28,9 @@ urlpatterns = [
     # Renders and allows SMS to be sent
     path('email/<int:contact_id>/', compose_sms_view, name='render_email'),
     path('send-sms/<int:contact_id>/', send_sms_message_view, name='send_sms'),
+
+
+    # Tracks communication logs
+    path("reachout/", communication_logs_view, name="reachout"),
+
 ]
