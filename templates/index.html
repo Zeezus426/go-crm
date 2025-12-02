@@ -1096,10 +1096,12 @@
                     const taskId = this.getAttribute('data-task-id');
                     const taskElement = document.getElementById(`task-${taskId}`);
                     const taskTitle = taskElement.querySelector('.todo-title').textContent;
+                    const url = `{% url 'delete_task' 0 %}`.replace('0', taskId);
+
                     
                     if (confirm(`Are you sure you want to delete the task "${taskTitle}"?`)) {
                         // Send request to delete the task
-                        fetch(`/delete_task/${taskId}/`, {
+                        fetch(url, {
                             method: 'POST',
                             headers: {
                                 'X-CSRFToken': getCookie('csrftoken'),

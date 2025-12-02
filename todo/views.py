@@ -62,7 +62,7 @@ def existing_tasks(request):
 
 
 
-def del_tasks(request, task_id):
+def delete_task(request, task_id):
     if request.method == "POST":
         try:
             task = get_object_or_404(Task, id=task_id)
