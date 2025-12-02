@@ -62,17 +62,49 @@ def existing_tasks(request):
 
 
 
-# def del_tasks(request, contact_id):
-#     if request.method == "POST":
-#         try:
-#             task = get_object_or_404(Task, id=contact_id)
-#             task.delete()
-#             return JsonResponse({
-#                 'success': True,
-#                 'message': 'Task deleted successfully'
-#             })
-#         except Exception as e:
-#             return JsonResponse({
-#                 'success': False,
-#                 'error': str(e)
-#             })
+def del_tasks(request, task_id):
+    if request.method == "POST":
+        try:
+            task = get_object_or_404(Task, id=task_id)
+            task.delete()
+            return JsonResponse({
+                'success': True,
+                'message': 'Task deleted successfully'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
+
+
+def is_completed(request, task_id):
+    if request.method == "POST":
+        task = get_object_or_404(Task, id=task_id)
+        if task.is_completed == True: 
+            return JsonResponse({"error": "Task is already completed."}, status=400)
+        if task.is_completed == False:
+            task.is_completed = True
+            task.save()
+            return JsonResponse({
+                'success': True,
+                'message': 'Task marked as completed'
+            })
+        
+
+def existing_tasks(request):
+    # For your AJAX endpoint
+    tasks = Task.objects.all().order_by('is_completed', '-created_at')
+    tasks_data = []
+    
+    for task in tasks:
+        tasks_data.append({
+            'id': task.id,
+            'title': task.title,
+            'description': task.description,
+            'created_at': task.created_at.isoformat(),
+            'created_by': task.created_by.username if task.created_by else 'Anonymous',
+            'is_completed': task.is_completed
+        })
+    
+    return JsonResponse({'success': True, 'tasks': tasks_data})

@@ -26,7 +26,7 @@ urlpatterns = [
     path('already_sent_emails/', sent_emails_history_view, name='already_sent_emails'),
 
     # Renders and allows SMS to be sent
-    path('email/<int:contact_id>/', compose_sms_view, name='render_email'),
+    path('email/<int:contact_id>/', compose_sms_view, name='render_sms'),
     path('send-sms/<int:contact_id>/', send_sms_message_view, name='send_sms'),
 
 
