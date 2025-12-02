@@ -42,7 +42,7 @@ def add_task(request):
         'error': 'Invalid request method'
     })
 
-def existing_tasks():
+def existing_tasks(request):
     """Return all tasks as JSON"""
     tasks = Task.objects.all().order_by('-created_at')
     
@@ -62,17 +62,17 @@ def existing_tasks():
 
 
 
-def del_tasks(request, contact_id):
-    if request.method == "POST":
-        try:
-            task = get_object_or_404(Task, id=contact_id)
-            task.delete()
-            return JsonResponse({
-                'success': True,
-                'message': 'Task deleted successfully'
-            })
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'error': str(e)
-            })
+# def del_tasks(request, contact_id):
+#     if request.method == "POST":
+#         try:
+#             task = get_object_or_404(Task, id=contact_id)
+#             task.delete()
+#             return JsonResponse({
+#                 'success': True,
+#                 'message': 'Task deleted successfully'
+#             })
+#         except Exception as e:
+#             return JsonResponse({
+#                 'success': False,
+#                 'error': str(e)
+#             })
