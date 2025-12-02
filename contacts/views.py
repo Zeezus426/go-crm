@@ -25,33 +25,36 @@ def contact_list_view(request):
     Returns:
         HttpResponse: Rendered index.html template with contacts and filter options.
     """
-    lead_class = request.GET.get('lead_class')
-    search_query = request.GET.get('search')
-    sort_by = request.GET.get('sort_by', 'Full_name')
-    
-    contacts = Contact.objects.all()
-    
-    if lead_class:
-        contacts = contacts.filter(lead_class=lead_class)
-    
-    if search_query:
-        contacts = contacts.filter(
-            Q(Full_name__icontains=search_query) |
-            Q(company__icontains=search_query) |
-            Q(email__icontains=search_query) |
-            Q(phone_number__icontains=search_query)
-        )
-    
-    contacts = contacts.order_by(sort_by)
-    
-    return render(request, 'index.html', {
-        'contacts': contacts,
-        'leads': contacts,
-        'current_filter': lead_class,
-        'search_query': search_query,
-        'sort_by': sort_by,
-        'lead_classifications': Contact.LEAD_CLASSIFICATIONS
-    })
+    if request.user.is_authenticated:
+        lead_class = request.GET.get('lead_class')
+        search_query = request.GET.get('search')
+        sort_by = request.GET.get('sort_by', 'Full_name')
+        
+        contacts = Contact.objects.all()
+        
+        if lead_class:
+            contacts = contacts.filter(lead_class=lead_class)
+        
+        if search_query:
+            contacts = contacts.filter(
+                Q(Full_name__icontains=search_query) |
+                Q(company__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(phone_number__icontains=search_query)
+            )
+        
+        contacts = contacts.order_by(sort_by)
+        
+        return render(request, 'index.html', {
+            'contacts': contacts,
+            'leads': contacts,
+            'current_filter': lead_class,
+            'search_query': search_query,
+            'sort_by': sort_by,
+            'lead_classifications': Contact.LEAD_CLASSIFICATIONS
+        })
+    else: 
+        return redirect('/accounts/login/')
 
 
 def contact_detail_view(request, contact_id):

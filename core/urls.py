@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('contacts.urls')),
+    path('todo/', include('todo.urls')),
     
     # Debug to be removed in production
     path('__debug__/', include('debug_toolbar.urls')),
