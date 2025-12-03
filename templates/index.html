@@ -40,6 +40,26 @@
             font-weight: bold;
             color: #007bff;
         }
+
+        .tab-link {
+            padding: 15px 25px;
+            cursor: pointer;
+            background: #e9ecef;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            position: relative;
+            top: 1px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .tab-link:hover {
+            background: #f8f9fa;
+            color: #007bff;
+        }
         .tab-content {
             display: none;
             padding: 20px;
@@ -497,6 +517,7 @@
         .todo-form-section {
             background: #f8f9fa;
             padding: 25px;
+            padding-right: 50px;
             border-radius: 12px;
             border: 1px solid #e9ecef;
         }
@@ -1118,193 +1139,128 @@
 
         <div id="todo" class="tab-content">
             <div class="todo-wrapper">
-                <!-- Header Section -->
+                <!-- Todo Header -->
                 <div class="todo-header">
                     <div class="header-left">
-                        <h2>
-                            <span class="todo-icon">📋</span>
-                            Task Manager
-                        </h2>
-                        <p class="subtitle">Stay organized and productive</p>
+                        <h2>📋 Task Manager</h2>
+                        <p class="subtitle">Manage your tasks and stay productive</p>
                     </div>
-                    <div class="header-right">
-                        <button id="refresh-tasks" class="btn-refresh">
-                            <span class="refresh-icon">🔄</span> Refresh
-                        </button>
-                    </div>
+                    <button class="btn-refresh" id="refresh-tasks">
+                        <span>🔄</span> Refresh
+                    </button>
                 </div>
 
-                <!-- Stats Overview -->
+                <!-- Stats Container -->
                 <div class="stats-container">
-                    <div class="stat-card" id="pending-stat">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-content">
+                            <div class="stat-number" id="total-tasks">0</div>
+                            <div class="stat-label">Total Tasks</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
                         <div class="stat-icon">⏳</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ pending_count }}</div>
+                            <div class="stat-number" id="pending-tasks">0</div>
                             <div class="stat-label">Pending</div>
                         </div>
                     </div>
-                    <div class="stat-card" id="completed-stat">
+                    <div class="stat-card">
                         <div class="stat-icon">✅</div>
                         <div class="stat-content">
-                            <div class="stat-number">{{ completed_count }}</div>
+                            <div class="stat-number" id="completed-tasks">0</div>
                             <div class="stat-label">Completed</div>
-                        </div>
-                    </div>
-                    <div class="stat-card" id="total-stat">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-content">
-                            <div class="stat-number">{{ total_count }}</div>
-                            <div class="stat-label">Total</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main Content Grid -->
+                <!-- Main Grid -->
                 <div class="todo-main-grid">
-                    <!-- Left Column: Add Task Form -->
+                    <!-- Form Section -->
                     <div class="todo-form-section">
                         <div class="form-header">
                             <h3>Add New Task</h3>
-                            <div class="form-subtitle">Create a new task to stay on track</div>
+                            <p class="form-subtitle">Create a new task to track your work</p>
                         </div>
-                        
-                        <form id="add-task-form" class="modern-form" method="POST" action="{% url 'todo' %}">
-                            {% csrf_token %}
+
+                        <form id="todo-form" class="modern-form">
+                            <input type="hidden" id="todo-id" name="todo-id" value="">
+
                             <div class="form-group">
-                                <label for="id_title">
-                                    <span class="label-icon">📝</span>
+                                <label for="todo-title">
+                                    <span class="label-icon">📌</span>
                                     Task Title
                                 </label>
-                                {{ form.title }}
+                                <input type="text"
+                                       id="todo-title"
+                                       name="title"
+                                       class="form-input"
+                                       placeholder="Enter task title..."
+                                       required>
                             </div>
 
                             <div class="form-group">
-                                <label for="id_description">
+                                <label for="todo-description">
                                     <span class="label-icon">📄</span>
-                                    Description (Optional)
+                                    Description
                                 </label>
-                                {{ form.description }}
+                                <textarea id="todo-description"
+                                          name="description"
+                                          class="form-textarea"
+                                          rows="4"
+                                          placeholder="Enter task description..."></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="id_priority">
+                                <label for="todo-priority">
                                     <span class="label-icon">🎯</span>
                                     Priority
                                 </label>
-                                {{ form.priority }}
+                                <select id="todo-priority" name="priority" class="form-input">
+                                    <option value="low">🟢 Low Priority</option>
+                                    <option value="medium" selected>🟡 Medium Priority</option>
+                                    <option value="high">🔴 High Priority</option>
+                                </select>
                             </div>
 
                             <div class="form-actions">
-                                <button type="submit" class="btn-primary">
-                                    <span class="btn-icon">➕</span>
-                                    Add Task
+                                <button type="submit" class="btn-primary" id="submit-btn">
+                                    <span>➕</span> Add Task
                                 </button>
                                 <button type="button" class="btn-secondary" id="clear-form">
-                                    <span class="btn-icon">🗑️</span>
-                                    Clear
+                                    <span>🔄</span> Clear
                                 </button>
                             </div>
                         </form>
                     </div>
 
-                    <!-- Right Column: Task Lists -->
+                    <!-- Tasks Section -->
                     <div class="tasks-section">
-                        <!-- Tasks Header with Toggle -->
                         <div class="tasks-header">
-                            <h3>Your Tasks</h3>
+                            <h3>Tasks</h3>
                             <div class="task-toggle">
-                                <button class="toggle-btn active" data-filter="all">All Tasks</button>
+                                <button class="toggle-btn active" data-filter="all">All</button>
                                 <button class="toggle-btn" data-filter="pending">Pending</button>
                                 <button class="toggle-btn" data-filter="completed">Completed</button>
                             </div>
                         </div>
 
-                        <!-- Tasks Container -->
                         <div class="tasks-container">
-                            {% if list %}
-                                <!-- Incomplete Tasks -->
-                                <div class="task-group incomplete-tasks">
-                                    <div class="group-header">
-                                        <h4>To Do <span class="task-count" id="pending-count">{{ pending_count }}</span></h4>
-                                    </div>
-                                    <div id="incomplete-tasks-container" class="tasks-list">
-                                        {% for item in list %}
-                                            {% if not item.completed %}
-                                            <div class="task-item" id="task-{{ item.id }}">
-                                                <div class="task-header">
-                                                    <div class="task-title">
-                                                        {{ item.title }}
-                                                        {% if item.priority == 'high' %}
-                                                            <span class="priority-badge priority-high">High</span>
-                                                        {% elif item.priority == 'medium' %}
-                                                            <span class="priority-badge priority-medium">Medium</span>
-                                                        {% elif item.priority == 'low' %}
-                                                            <span class="priority-badge priority-low">Low</span>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="task-actions">
-                                                        <button class="task-action-btn btn-complete" data-task-id="{{ item.id }}">
-                                                            ✓
-                                                        </button>
-                                                        <button class="task-action-btn btn-delete" data-task-id="{{ item.id }}">🗑️</button>
-                                                    </div>
-                                                </div>
-                                                {% if item.description %}
-                                                <div class="task-description">{{ item.description }}</div>
-                                                {% endif %}
-                                                <div class="task-meta">
-                                                    <div class="task-date">
-                                                        <span>📅</span> {{ item.date|date:"M d, Y H:i" }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
+                            <div class="loading-state" id="loading" style="display: none;">
+                                <div class="spinner"></div>
+                                <p>Loading tasks...</p>
+                            </div>
 
-                                <!-- Completed Tasks -->
-                                <div class="task-group completed-tasks">
-                                    <div class="group-header">
-                                        <h4>Completed <span class="task-count" id="completed-count">{{ completed_count }}</span></h4>
-                                    </div>
-                                    <div id="completed-tasks-container" class="tasks-list">
-                                        {% for item in list %}
-                                            {% if item.completed %}
-                                            <div class="task-item completed" id="task-{{ item.id }}">
-                                                <div class="task-header">
-                                                    <div class="task-title">
-                                                        {{ item.title }}
-                                                        <span class="priority-badge">Completed</span>
-                                                    </div>
-                                                    <div class="task-actions">
-                                                        <button class="task-action-btn btn-complete" data-task-id="{{ item.id }}">
-                                                            ↩️
-                                                        </button>
-                                                        <button class="task-action-btn btn-delete" data-task-id="{{ item.id }}">🗑️</button>
-                                                    </div>
-                                                </div>
-                                                {% if item.description %}
-                                                <div class="task-description">{{ item.description }}</div>
-                                                {% endif %}
-                                                <div class="task-meta">
-                                                    <div class="task-date">
-                                                        <span>📅</span> {{ item.date|date:"M d, Y H:i" }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% else %}
-                                <!-- Empty State -->
-                                <div id="empty-state" class="empty-state" style="display: block;">
-                                    <div class="empty-icon">📋</div>
-                                    <h4>No tasks yet</h4>
-                                    <p>Add your first task using the form on the left</p>
-                                </div>
-                            {% endif %}
+                            <div id="tasks-content">
+                                <!-- Tasks will be dynamically loaded here -->
+                            </div>
+
+                            <div class="empty-state" id="empty-state">
+                                <div class="empty-icon">📋</div>
+                                <h4>No tasks found</h4>
+                                <p>Create your first task to get started!</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1321,154 +1277,9 @@
                 const tabId = tab.getAttribute('data-tab');
                 document.getElementById(tabId).classList.add('active');
                 
-                // Reload page when todo tab is clicked to get fresh data
-                if (tabId === 'todo') {
-                    // If you want AJAX loading instead, you can implement loadTasks() here
-                }
-            });
+              });
         });
 
-        // Clear form button
-        document.getElementById('clear-form')?.addEventListener('click', function() {
-            document.getElementById('add-task-form').reset();
-        });
-
-        // Refresh tasks button
-        document.getElementById('refresh-tasks')?.addEventListener('click', function() {
-            window.location.reload();
-        });
-
-        // Task filter toggle
-        document.querySelectorAll('.toggle-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-
-                const filter = this.getAttribute('data-filter');
-                filterTasks(filter);
-            });
-        });
-
-        // Complete/Incomplete task functionality
-        document.querySelectorAll('.btn-complete').forEach(button => {
-            button.addEventListener('click', function() {
-                const taskId = this.getAttribute('data-task-id');
-                const taskItem = document.getElementById(`task-${taskId}`);
-
-                // Send AJAX request to toggle completion status
-                fetch(`/toggle-task/${taskId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken'),
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Reload the page to show updated task
-                        window.location.reload();
-                    } else {
-                        alert('Error updating task: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error updating task');
-                });
-            });
-        });
-
-        // Delete task functionality
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const taskId = this.getAttribute('data-task-id');
-                const taskItem = document.getElementById(`task-${taskId}`);
-                const taskTitleElement = taskItem.querySelector('.task-title');
-                const taskTitle = taskTitleElement ? taskTitleElement.textContent.trim().split('High')[0].split('Medium')[0].split('Low')[0].trim() : 'this task';
-
-                if (confirm(`Are you sure you want to delete "${taskTitle}"?`)) {
-                    // Navigate to delete URL
-                    window.location.href = `/del/${taskId}/`;
-                }
-            });
-        });
-
-        // Filter tasks function
-        function filterTasks(filter) {
-            const incompleteGroup = document.querySelector('.incomplete-tasks');
-            const completedGroup = document.querySelector('.completed-tasks');
-            
-            switch(filter) {
-                case 'all':
-                    incompleteGroup.style.display = 'block';
-                    completedGroup.style.display = 'block';
-                    break;
-                case 'pending':
-                    incompleteGroup.style.display = 'block';
-                    completedGroup.style.display = 'none';
-                    break;
-                case 'completed':
-                    incompleteGroup.style.display = 'none';
-                    completedGroup.style.display = 'block';
-                    break;
-            }
-        }
-
-        // Update task stats function
-        function updateTaskStats() {
-            const pendingTasks = document.querySelectorAll('.task-item:not(.completed)');
-            const completedTasks = document.querySelectorAll('.task-item.completed');
-            const totalTasks = pendingTasks.length + completedTasks.length;
-            
-            // Update stats cards
-            document.querySelector('#pending-stat .stat-number').textContent = pendingTasks.length;
-            document.querySelector('#completed-stat .stat-number').textContent = completedTasks.length;
-            document.querySelector('#total-stat .stat-number').textContent = totalTasks.length;
-            
-            // Update task counts
-            document.getElementById('pending-count').textContent = pendingTasks.length;
-            document.getElementById('completed-count').textContent = completedTasks.length;
-            
-            // Show empty state if no tasks
-            const emptyState = document.getElementById('empty-state');
-            if (totalTasks === 0) {
-                emptyState.style.display = 'block';
-            } else {
-                emptyState.style.display = 'none';
-            }
-        }
-
-        // Function to show success message
-        function showSuccessMessage(message) {
-            const successMessage = document.getElementById('successMessage');
-            successMessage.textContent = message;
-            successMessage.style.display = 'block';
-
-            // Hide message after 3 seconds
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 3000);
-        }
-
-        // Function to get CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        // Initialize task filtering
-        filterTasks('all');
 
         // AI Lead Generation
         function generateAILead() {
@@ -1574,7 +1385,7 @@
             if (document.getElementById('todo').classList.contains('active')) {
                 loadTasks();
             }
-            
+
             // Tab switch event
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -1640,6 +1451,460 @@
                 }
             }
         }
+
+        // TODO Functionality
+        let todos = [];
+        let currentFilter = 'all';
+
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Initialize todos from Django backend
+        async function initializeTodos() {
+            try {
+                const response = await fetch('/todo/get/', {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        todos = data.todos;
+                        console.log('Loaded todos from backend:', todos.length, 'items');
+                    }
+                } else {
+                    console.error('Error loading todos:', response.statusText);
+                }
+            } catch (e) {
+                console.error('Error fetching todos:', e);
+                todos = [];
+            }
+        }
+
+        // Update statistics from local todos
+        function updateStats() {
+            const total = todos.length;
+            const completed = todos.filter(todo => todo.completed).length;
+            const pending = total - completed;
+
+            document.getElementById('total-tasks').textContent = total;
+            document.getElementById('completed-tasks').textContent = completed;
+            document.getElementById('pending-tasks').textContent = pending;
+        }
+
+        // Update statistics from backend
+        async function updateStatsFromBackend() {
+            try {
+                const response = await fetch('/todo/stats/', {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById('total-tasks').textContent = data.stats.total;
+                        document.getElementById('completed-tasks').textContent = data.stats.completed;
+                        document.getElementById('pending-tasks').textContent = data.stats.pending;
+                        console.log('Updated stats from backend:', data.stats);
+                    }
+                }
+            } catch (e) {
+                console.error('Error updating stats:', e);
+            }
+        }
+
+        // Create todo HTML element
+        function createTodoElement(todo) {
+            const todoItem = document.createElement('div');
+            todoItem.className = `task-item ${todo.completed ? 'completed' : ''}`;
+            todoItem.setAttribute('data-todo-id', todo.id);
+
+            const priorityClass = `priority-${todo.priority}`;
+            const priorityEmoji = todo.priority === 'high' ? '🔴' : todo.priority === 'medium' ? '🟡' : '🟢';
+            const priorityText = todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1);
+
+            todoItem.innerHTML = `
+                <div class="task-header">
+                    <div class="task-title">
+                        ${todo.title}
+                        <span class="priority-badge ${priorityClass}">${priorityEmoji} ${priorityText}</span>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-action-btn btn-complete" onclick="toggleTodo(${todo.id})" title="${todo.completed ? 'Mark as pending' : 'Mark as complete'}">
+                            ${todo.completed ? '↩️' : '✓'}
+                        </button>
+                        <button class="task-action-btn btn-edit" onclick="loadTodoForEdit(${todo.id})" title="Edit task" style="background: #ffc107; color: #000;">
+                            ✏️
+                        </button>
+                        <button class="task-action-btn btn-delete" onclick="deleteTodo(${todo.id})" title="Delete task">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+                ${todo.description ? `<div class="task-description">${todo.description}</div>` : ''}
+                <div class="task-meta">
+                    <div class="task-date">
+                        📅 ${new Date(todo.created_at).toLocaleDateString()}
+                        ${todo.updated_at ? '(Updated: ' + new Date(todo.updated_at).toLocaleDateString() + ')' : ''}
+                    </div>
+                    ${todo.completed ? '<span>✅ Completed</span>' : '<span>⏳ Pending</span>'}
+                </div>
+            `;
+
+            return todoItem;
+        }
+
+        // Render todos
+        function renderTodos() {
+            const tasksContent = document.getElementById('tasks-content');
+            const emptyState = document.getElementById('empty-state');
+            const loading = document.getElementById('loading');
+
+            console.log('Rendering todos:', todos.length, 'total items');
+            console.log('Filter:', currentFilter);
+
+            loading.style.display = 'none';
+            tasksContent.innerHTML = '';
+
+            // Filter todos
+            let filteredTodos = todos;
+            if (currentFilter === 'completed') {
+                filteredTodos = todos.filter(todo => todo.completed);
+            } else if (currentFilter === 'pending') {
+                filteredTodos = todos.filter(todo => !todo.completed);
+            }
+
+            // Sort todos: incomplete first, then by created_at (newest first)
+            filteredTodos.sort((a, b) => {
+                if (a.completed !== b.completed) {
+                    return a.completed ? 1 : -1;
+                }
+                return new Date(b.created_at) - new Date(a.created_at);
+            });
+
+            if (filteredTodos.length === 0) {
+                emptyState.style.display = 'block';
+                tasksContent.style.display = 'none';
+            } else {
+                emptyState.style.display = 'none';
+                tasksContent.style.display = 'flex';
+                tasksContent.className = 'tasks-list';
+
+                // Group todos by completion status
+                const pendingTodos = filteredTodos.filter(todo => !todo.completed);
+                const completedTodos = filteredTodos.filter(todo => todo.completed);
+
+                if (pendingTodos.length > 0) {
+                    const pendingGroup = document.createElement('div');
+                    pendingGroup.className = 'task-group';
+                    pendingGroup.innerHTML = `
+                        <div class="group-header">
+                            <h4>⏳ Pending Tasks</h4>
+                            <span class="task-count">${pendingTodos.length}</span>
+                        </div>
+                    `;
+                    const pendingList = document.createElement('div');
+                    pendingList.className = 'tasks-list';
+                    pendingTodos.forEach(todo => {
+                        pendingList.appendChild(createTodoElement(todo));
+                    });
+                    pendingGroup.appendChild(pendingList);
+                    tasksContent.appendChild(pendingGroup);
+                }
+
+                if (completedTodos.length > 0) {
+                    const completedGroup = document.createElement('div');
+                    completedGroup.className = 'task-group';
+                    completedGroup.innerHTML = `
+                        <div class="group-header">
+                            <h4>✅ Completed Tasks</h4>
+                            <span class="task-count">${completedTodos.length}</span>
+                        </div>
+                    `;
+                    const completedList = document.createElement('div');
+                    completedList.className = 'tasks-list';
+                    completedTodos.forEach(todo => {
+                        completedList.appendChild(createTodoElement(todo));
+                    });
+                    completedGroup.appendChild(completedList);
+                    tasksContent.appendChild(completedGroup);
+                }
+            }
+
+            updateStats();
+        }
+
+        // Load todos from backend
+        async function loadTasks() {
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('empty-state');
+            const tasksContent = document.getElementById('tasks-content');
+
+            console.log('Loading tasks from backend...');
+
+            loading.style.display = 'block';
+            emptyState.style.display = 'none';
+            tasksContent.style.display = 'none';
+
+            try {
+                await initializeTodos();
+                await updateStatsFromBackend();
+                renderTodos();
+            } catch (e) {
+                console.error('Error loading tasks:', e);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Add or update todo via API
+        async function addTodo(todoData) {
+            try {
+                const todoId = document.getElementById('todo-id').value;
+                let response;
+
+                if (todoId) {
+                    // Update existing todo
+                    response = await fetch(`/todo/update/${todoId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(todoData),
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            const index = todos.findIndex(t => t.id === parseInt(todoId));
+                            if (index !== -1) {
+                                todos[index] = data.todo;
+                            }
+                            console.log('Updated todo:', data.todo);
+                        }
+                    }
+                } else {
+                    // Create new todo
+                    response = await fetch('/todo/create/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(todoData),
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            todos.unshift(data.todo);
+                            console.log('Created todo:', data.todo);
+                        }
+                    }
+                }
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                renderTodos();
+                await updateStatsFromBackend();
+
+            } catch (e) {
+                console.error('Error saving todo:', e);
+                alert('Error saving todo: ' + e.message);
+            }
+        }
+
+        // Toggle todo completion via API
+        async function toggleTodo(id) {
+            try {
+                const response = await fetch(`/todo/toggle-task/${id}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        const todo = todos.find(t => t.id === id);
+                        if (todo) {
+                            todo.completed = !todo.completed;
+                            console.log('Toggled todo:', id);
+                        }
+                        renderTodos();
+                        await updateStatsFromBackend();
+                    }
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            } catch (e) {
+                console.error('Error toggling todo:', e);
+                alert('Error toggling todo: ' + e.message);
+            }
+        }
+
+        // Delete todo via API
+        async function deleteTodo(id) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                try {
+                    const response = await fetch(`/todo/delete/${id}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            todos = todos.filter(todo => todo.id !== id);
+                            console.log('Deleted todo:', id);
+                            renderTodos();
+                            await updateStatsFromBackend();
+                        }
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                } catch (e) {
+                    console.error('Error deleting todo:', e);
+                    alert('Error deleting todo: ' + e.message);
+                }
+            }
+        }
+
+        // Filter todos
+        function filterTasks(filter) {
+            currentFilter = filter;
+            renderTodos();
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('todo-form').reset();
+            document.getElementById('todo-id').value = '';
+            document.getElementById('submit-btn').innerHTML = '<span>➕</span> Add Task';
+        }
+
+        // Load todo for editing
+        function loadTodoForEdit(id) {
+            const todo = todos.find(t => t.id === id);
+            if (todo) {
+                document.getElementById('todo-id').value = todo.id;
+                document.getElementById('todo-title').value = todo.title;
+                document.getElementById('todo-description').value = todo.description || '';
+                document.getElementById('todo-priority').value = todo.priority;
+                document.getElementById('submit-btn').innerHTML = '<span>💾</span> Update Task';
+
+                // Scroll to form
+                document.querySelector('.todo-form-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Extend the existing DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize todos on page load
+            initializeTodos();
+
+            // Existing code...
+
+            // Initialize todo functionality
+            const todoForm = document.getElementById('todo-form');
+
+            // Todo form submission
+            if (todoForm) {
+                todoForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const todoId = document.getElementById('todo-id').value;
+                    const todoData = {
+                        id: todoId ? parseInt(todoId) : null,
+                        title: document.getElementById('todo-title').value.trim(),
+                        description: document.getElementById('todo-description').value.trim(),
+                        priority: document.getElementById('todo-priority').value
+                    };
+
+                    if (todoData.title) {
+                        addTodo(todoData);
+                        clearForm();
+
+                        // Show success message
+                        const successMessage = document.getElementById('successMessage');
+                        successMessage.textContent = todoId ? 'Task updated successfully!' : 'Task added successfully!';
+                        successMessage.style.display = 'block';
+
+                        setTimeout(() => {
+                            successMessage.style.display = 'none';
+                        }, 3000);
+                    }
+                });
+            }
+
+            // Clear form button
+            const clearBtn = document.getElementById('clear-form');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearForm);
+            }
+
+            // Refresh tasks button
+            const refreshBtn = document.getElementById('refresh-tasks');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span>⏳</span> Refreshing...';
+                    this.disabled = true;
+
+                    loadTasks();
+
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }, 1000);
+                });
+            }
+
+            // Task filter toggle
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const filter = this.getAttribute('data-filter');
+                    filterTasks(filter);
+                });
+            });
+
+            // Initialize todo tab when loaded
+            if (document.getElementById('todo').classList.contains('active')) {
+                loadTasks();
+            }
+        });
     </script>
 </body>
 </html>
