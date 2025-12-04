@@ -940,7 +940,7 @@
         <div id="successMessage" class="success-message"></div>
         
         <div class="tabs">
-            <div class="tab active" data-tab="contacts">Current Users</div>
+            <div class="tab active" data-tab="contacts">Active Leads</div>
             <div class="tab" data-tab="leads">AI Leads</div>
             <div class="tab" data-tab="manual-leads">Manual Leads</div>
             <div class="tab" data-tab="apex-leads">Apex Leads</div>
@@ -1017,40 +1017,8 @@
             </form>
         </div>
         <div id="contacts" class="tab-content active">
-            <h2>Current Leads</h2>
-            {% if contacts %}
-                <div class="contacts-list">
-                    {% for contact in contacts %}
-                        <div class="contact-item" id="contact-{{ contact.id }}">
-                            <div class="contact-actions">
-                                <a href="{% url 'moreinfo_contact' contact.id %}" class="info-btn">More Info</a>
-                                <a href="{% url 'render_email' contact.id %}" class="enquire-btn">Email</a>
-                                <a href="{% url 'update_contact' contact.id %}" class="edit-btn">Edit</a>
-                                <a href="{% url 'send_sms' contact.id %}" class="enquire-btn1">SMS</a>
-                                <button class="delete-btn contact-delete-btn"
-                                        data-contact-id="{{ contact.id }}"
-                                        data-contact-type="contact">
-                                    Delete
-                                </button>
-                            </div>
-
-                            
-                            <div class="contact-field">
-                                <strong>Company or Name:</strong> {{ contact.company|default:contact.Full_name }}
-                            </div>
-                            <div class="contact-field">
-                                <strong>Email:</strong> {{ contact.email }}
-                            </div>
-                            <div class="contact-field">
-                                <strong>Lead Classification: </strong> {{ contact.lead_class}}
-                            </div>  
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="no-records">No current users found.</div>
-            {% endif %}
-            <a href="{% url 'adding_contact' %}" class="add-btn">Add New User</a>
+            <h2>Active Leads</h2>
+            <div class="no-records">Active Leads section ready for backend integration.</div>
         </div>
 
         <div id="leads" class="tab-content">
@@ -1141,7 +1109,39 @@
 
         <div id="manual-leads" class="tab-content">
             <h2>Manual Leads</h2>
-            <div class="no-records">Manual leads section ready for backend integration.</div>
+            {% if contacts %}
+                <div class="contacts-list">
+                    {% for contact in contacts %}
+                        <div class="contact-item" id="contact-{{ contact.id }}">
+                            <div class="contact-actions">
+                                <a href="{% url 'moreinfo_contact' contact.id %}" class="info-btn">More Info</a>
+                                <a href="{% url 'render_email' contact.id %}" class="enquire-btn">Email</a>
+                                <a href="{% url 'update_contact' contact.id %}" class="edit-btn">Edit</a>
+                                <a href="{% url 'send_sms' contact.id %}" class="enquire-btn1">SMS</a>
+                                <button class="delete-btn contact-delete-btn"
+                                        data-contact-id="{{ contact.id }}"
+                                        data-contact-type="contact">
+                                    Delete
+                                </button>
+                            </div>
+
+
+                            <div class="contact-field">
+                                <strong>Company or Name:</strong> {{ contact.company|default:contact.Full_name }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Email:</strong> {{ contact.email }}
+                            </div>
+                            <div class="contact-field">
+                                <strong>Lead Classification: </strong> {{ contact.lead_class}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-records">No manual leads found.</div>
+            {% endif %}
+            <a href="{% url 'adding_contact' %}" class="add-btn">Add New User</a>
         </div>
 
         <div id="apex-leads" class="tab-content">
@@ -1458,7 +1458,7 @@
                 if (!noRecords) {
                     const noRecordsDiv = document.createElement('div');
                     noRecordsDiv.className = 'no-records';
-                    noRecordsDiv.textContent = contactType === 'contact' ? 'No current users found.' : 'No AI leads found.';
+                    noRecordsDiv.textContent = contactType === 'contact' ? 'No Active Leads found.' : 'No AI leads found.';
                     tabContent.querySelector('.contacts-list').appendChild(noRecordsDiv);
                 }
             }
