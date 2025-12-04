@@ -25,13 +25,6 @@ class Contact(models.Model):
         default='New',
     )
 
-    SOURCES = [
-        ("Manual", "Manual"),
-        ("ApexResearch", "ApexResearch"),
-        ("SuperResearcher", "SuperResearcher"),
-    ]
-    source = models.CharField(max_length=100,
-                              choices = SOURCES )
     notes = models.CharField(max_length=500, blank=True)
     address = models.CharField(max_length=200, blank=True)
     company = models.CharField(max_length=100, blank=True)

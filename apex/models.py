@@ -9,3 +9,20 @@ class apex_research(models.Model):
     full_name = models.CharField(max_length=200, null= True)
     promoted = models.BooleanField(default=False)
     is_active_lead = models.BooleanField(default=False)
+    LEAD_CLASSIFICATIONS = [
+        ('New', 'New Lead'),
+        ('Contacted', 'Contacted'),
+        ('Growing Interest', 'Growing Interest'),
+        ('Leading', 'Leading'),
+        ('Dying', 'Dying'),
+        ('Converted', 'Converted'),
+        ('Cold', 'Cold'),
+    ]
+    lead_class = models.CharField(
+        max_length=20,
+        choices=LEAD_CLASSIFICATIONS,
+        default='New',
+    )
+
+    notes = models.CharField(max_length=500, blank=True)
+    address = models.CharField(max_length=200, blank=True)
