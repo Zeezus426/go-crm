@@ -535,3 +535,36 @@ def staged_leads(request):
             'apex_leads': list(apex_leads.values()),
             'super_leads': list(super_leads.values())
         })
+    
+
+def promote_to_active(request):
+    if request.method == "POST" or request.method == "GET":
+        apex_leads = apex_research.objects.filter(promoted=True)
+        super_leads = SuperResearcher.objects.filter(promoted=True)
+        if apex_leads:
+            for contact in apex_leads:
+                contact.is_active_lead = True
+                contact.save()
+        if super_leads:
+            for contact in super_leads:
+                contact.is_active_lead = True
+                contact.save()
+        return JsonResponse({
+            'apex_leads': list(apex_leads.values()),
+            'super_leads': list(super_leads.values())
+        })
+    
+def active_leads_view(request):
+    if request.method == "POST" or request.method == "GET":
+        promoted_apex_contacts = apex_research.objects.filter(promoted=True)
+        promoted_super_contacts = SuperResearcher.objects.filter(promoted=True)
+        if promoted_apex_contacts or promoted_super_contacts:
+            promoted_apex_contacts.update(promoted=False)
+            promoted_super_contacts.update(promoted=False)
+             
+        active_apex_leads = apex_research.objects.filter(is_active_lead=True)
+        active_super_leads = SuperResearcher.objects.filter(is_active_lead=True)
+        return JsonResponse({
+            'active_apex_leads': list(active_apex_leads.values()),
+            'active_super_leads': list(active_super_leads.values())
+        })

@@ -8,3 +8,4 @@ class SuperResearcher(models.Model):
     email = models.EmailField(max_length=200, null= True)
     full_name = models.CharField(max_length=200, null= True)
     promoted = models.BooleanField(default=False)
+    is_active_lead = models.BooleanField(default=False)

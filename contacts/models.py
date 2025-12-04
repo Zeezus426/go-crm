@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from apex.models import apex_research
+from super_researcher.models import SuperResearcher
 # Create your models here.
 class Contact(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

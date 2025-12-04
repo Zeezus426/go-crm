@@ -51,7 +51,13 @@ urlpatterns = [
     path("promote-super/<int:contact_id>/", promote_super, name="promote_super_url"),
 
     # Staged leads - shows promoted contacts from both databases
-    path("staged-leads/", staged_leads, name="staged_leads")
+    path("staged-leads/", staged_leads, name="staged_leads"),
+
+    # Promote staged leads to active leads
+    path("promote-to-active/", promote_to_active, name="promote_to_active"),
+
+    # Active leads view - shows contacts with is_active_lead=True
+    path("active-leads/", active_leads_view, name="active_leads_view")
 
 
 ]

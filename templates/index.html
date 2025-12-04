@@ -1019,7 +1019,10 @@
         </div>
         <div id="contacts" class="tab-content active">
             <h2>Active Leads</h2>
-            <div class="no-records">Active Leads section ready for backend integration.</div>
+            <button class="add-btn" onclick="loadActiveLeads()" style="margin-bottom: 15px;">🔄 Refresh Active Leads</button>
+            <div class="contacts-list" id="active-leads-list">
+                <div class="no-records">Click "Refresh" to load active leads from database</div>
+            </div>
         </div>
 
         <div id="leads" class="tab-content">
@@ -1147,7 +1150,10 @@
 
         <div id="staged-leads" class="tab-content">
             <h2>Staged Leads (Promoted Contacts)</h2>
-            <button class="add-btn" onclick="loadStagedLeads()" style="margin-bottom: 15px;">🔄 Refresh Staged Leads</button>
+            <div style="margin-bottom: 15px;">
+                <button class="add-btn" onclick="loadStagedLeads()">🔄 Refresh Staged Leads</button>
+                <button class="generate-btn" onclick="promoteToActiveLeads()" style="margin-left: 10px; background: linear-gradient(45deg, #28a745, #20c997);">🚀 Promote All to Active Leads</button>
+            </div>
             <div class="contacts-list" id="staged-leads-list">
                 <div class="no-records">Click "Refresh" to load staged (promoted) leads from database</div>
             </div>
@@ -1992,7 +1998,9 @@
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', () => {
                     const tabId = tab.getAttribute('data-tab');
-                    if (tabId === 'apex-leads') {
+                    if (tabId === 'contacts') {
+                        loadActiveLeads();
+                    } else if (tabId === 'apex-leads') {
                         loadApexLeads();
                     } else if (tabId === 'staged-leads') {
                         loadStagedLeads();
@@ -2047,6 +2055,93 @@
                 .catch(error => {
                     console.error('Error loading Apex leads:', error);
                     container.innerHTML = '<div class="no-records">Error loading Apex leads. Please try again.</div>';
+                });
+        }
+
+        // Load Active Leads from database
+        function loadActiveLeads() {
+            const container = document.getElementById('active-leads-list');
+            container.innerHTML = '<div class="no-records">Loading active leads...</div>';
+
+            fetch('/active-leads/')
+                .then(response => response.json())
+                .then(data => {
+                    let contactsHtml = '';
+                    let hasContacts = false;
+
+                    // Display Active Apex Leads
+                    if (data.active_apex_leads && data.active_apex_leads.length > 0) {
+                        hasContacts = true;
+                        contactsHtml += '<h3 style="color: #667eea; margin: 20px 0 10px 0;">🔹 Active Apex Leads</h3>';
+                        contactsHtml += data.active_apex_leads.map(contact => `
+                            <div class="contact-item">
+                                <div class="contact-actions">
+                                    <button class="delete-btn" onclick="deleteApexContact(${contact.id})">Delete</button>
+                                    <span class="ai-status status-ready">🌟 Active Lead</span>
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Company:</strong> ${contact.company || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Name:</strong> ${contact.full_name || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Email:</strong> ${contact.email || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Phone:</strong> ${contact.phone_number || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Website:</strong> ${contact.website || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Type:</strong> Apex Research
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+
+                    // Display Active Super Leads
+                    if (data.active_super_leads && data.active_super_leads.length > 0) {
+                        hasContacts = true;
+                        contactsHtml += '<h3 style="color: #f5576c; margin: 20px 0 10px 0;">🔶 Active Super Leads</h3>';
+                        contactsHtml += data.active_super_leads.map(contact => `
+                            <div class="contact-item">
+                                <div class="contact-actions">
+                                    <button class="delete-btn" onclick="deleteSuperContact(${contact.id})">Delete</button>
+                                    <span class="ai-status status-ready">🌟 Active Lead</span>
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Company:</strong> ${contact.company || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Name:</strong> ${contact.full_name || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Email:</strong> ${contact.email || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Phone:</strong> ${contact.phone_number || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Website:</strong> ${contact.website || 'N/A'}
+                                </div>
+                                <div class="contact-field">
+                                    <strong>Type:</strong> Super Researcher
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+
+                    if (hasContacts) {
+                        container.innerHTML = contactsHtml;
+                    } else {
+                        container.innerHTML = '<div class="no-records">No active leads found. Promote some staged leads to active to see them here.</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading active leads:', error);
+                    container.innerHTML = '<div class="no-records">Error loading active leads. Please try again.</div>';
                 });
         }
 
@@ -2241,6 +2336,45 @@
                     alert('Error deleting Super contact: ' + error.message);
                 });
             }
+        }
+
+        // Promote all staged leads to active leads
+        function promoteToActiveLeads() {
+            const confirmed = confirm('Are you sure you want to promote all staged leads to active leads? This will mark all promoted contacts as active.');
+            if (!confirmed) return;
+
+            // Show loading state
+            const container = document.getElementById('staged-leads-list');
+            const originalContent = container.innerHTML;
+            container.innerHTML = '<div class="no-records">🚀 Promoting staged leads to active leads...</div>';
+
+            fetch('/promote-to-active/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result && (result.apex_leads || result.super_leads)) {
+                    const totalPromoted = (result.apex_leads ? result.apex_leads.length : 0) + (result.super_leads ? result.super_leads.length : 0);
+                    showSuccessMessage(`Successfully promoted ${totalPromoted} staged leads to active leads!`);
+
+                    // Refresh the staged leads to show updated status
+                    setTimeout(() => {
+                        loadStagedLeads();
+                    }, 1500);
+                } else {
+                    container.innerHTML = originalContent;
+                    alert('No staged leads to promote or an error occurred.');
+                }
+            })
+            .catch(error => {
+                console.error('Error promoting to active leads:', error);
+                container.innerHTML = originalContent;
+                alert('Error promoting staged leads to active leads: ' + error.message);
+            });
         }
     </script>
 </body>
