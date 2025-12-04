@@ -9,8 +9,8 @@ from django.template.loader import get_template
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.db.models import Q
-from twilio.rest import Client
-from django.conf import settings
+from apex.models import apex_research
+from super_researcher.models import SuperResearcher
 
 def contact_list_view(request):
     """Main view for displaying and filtering the contact list.
@@ -442,10 +442,22 @@ def communication_logs_view(request):
 
 
 
-def promote(request, contact_id):
+def promote_apex(request, contact_id):
     if request.method == "POST":
-        contact = get_object_or_404(Contact, pk=contact_id)
+        contact = get_object_or_404(apex_research, pk=contact_id)
         if contact == None:
             return JsonResponse({'success': False, 'error': 'Contact not found'})
         if contact:
-            pass
+            contact.promoted = True
+            contact.save()
+            return JsonResponse({'success': True, 'message': 'Contact promoted successfully'})
+
+def promote_super(request, contact_id):
+    if request.method == "POST":
+        contact = get_object_or_404(SuperResearcher, pk=contact_id)
+        if contact == None:
+            return JsonResponse({'success': False, 'error': 'Contact not found'})
+        if contact:
+            contact.promoted = True
+            contact.save()
+            return JsonResponse({'success': True, 'message': 'Contact promoted successfully'})
