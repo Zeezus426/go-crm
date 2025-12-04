@@ -470,3 +470,68 @@ def show_promoted_contacts(request):
             'apex_contacts': promoted_apex_contacts,
             'super_contacts': promoted_super_contacts
         })
+    
+
+# Del for prod
+
+
+def render_apex(request):
+    if request.method == "POST" or request.method == "GET":
+        apex_contacts = apex_research.objects.all()
+        return JsonResponse({'apex_contacts': list(apex_contacts.values())})
+
+def add_apex(request):
+    if request.method == "POST":
+        company = request.POST.get("company")
+        website = request.POST.get("website")
+        phone_number = request.POST.get("phone_number")
+        email = request.POST.get("email")
+        full_name = request.POST.get("full_name")
+
+        apex_contact = apex_research.objects.create(
+            company=company,
+            website=website,
+            phone_number=phone_number,
+            email=email,
+            full_name=full_name,
+            promoted=False
+        )
+        return render(request, "add_apex.html", {'success': True, 'message': 'Apex Research contact added successfully'})
+    else:
+        return render(request, "add_apex.html")
+    
+
+def render_super(request):
+    if request.method == "POST" or request.method == "GET":
+        super_contacts = SuperResearcher.objects.all()
+        return JsonResponse({'super_contacts': list(super_contacts.values())})
+
+def add_super(request):
+    if request.method == "POST":
+        company = request.POST.get("company")
+        website = request.POST.get("website")
+        phone_number = request.POST.get("phone_number")
+        email = request.POST.get("email")
+        full_name = request.POST.get("full_name")
+
+        super_contact = SuperResearcher.objects.create(
+            company=company,
+            website=website,
+            phone_number=phone_number,
+            email=email,
+            full_name=full_name,
+            promoted=False
+        )
+        return render(request, "add_super.html", {'success': True, 'message': 'Super Researcher contact added successfully'})
+    else:
+        return render(request, "add_super.html")
+    
+
+def staged_leads(request):
+    if request.method == "POST" or request.method == "GET":
+        apex_leads = apex_research.objects.filter(promoted=True)
+        super_leads = SuperResearcher.objects.filter(promoted=True)
+        return JsonResponse({
+            'apex_leads': list(apex_leads.values()),
+            'super_leads': list(super_leads.values())
+        })
