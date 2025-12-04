@@ -461,3 +461,12 @@ def promote_super(request, contact_id):
             contact.promoted = True
             contact.save()
             return JsonResponse({'success': True, 'message': 'Contact promoted successfully'})
+        
+def show_promoted_contacts(request):
+    if request.method == "POST":
+        promoted_apex_contacts = apex_research.objects.filter(promoted=True)
+        promoted_super_contacts = SuperResearcher.objects.filter(promoted=True)
+        return JsonResponse({
+            'apex_contacts': promoted_apex_contacts,
+            'super_contacts': promoted_super_contacts
+        })
