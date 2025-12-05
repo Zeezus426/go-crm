@@ -1,5 +1,3 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional
 from google.adk.agents import LlmAgent  
 from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
@@ -7,10 +5,17 @@ from mcp import StdioServerParameters
 from google.adk.models.lite_llm import LiteLlm
 import os
 from dotenv import load_dotenv 
-from prompting import research_prompt
+from .prompting import research_prompt
 
 # litellm._turn_on_debug()
 load_dotenv()
+
+
+
+
+# Define the model once and reuse it
+model_name_at_endpoint = "lm_studio/glm-z1-9b-0414"
+api_base_url = "http://localhost:1234/v1"
 
 # Create the LiteLlm model instance
 model = LiteLlm(
