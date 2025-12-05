@@ -2021,8 +2021,11 @@
                         const contactsHtml = data.apex_contacts.map(contact => `
                             <div class="contact-item">
                                 <div class="contact-actions">
+                                    <button class="info-btn" onclick="moreInfoApex(${contact.id})">More Info</button>
+                                    <button class="enquire-btn" onclick="emailApex(${contact.id})">Email</button>
+                                    <button class="enquire-btn1" onclick="smsApex(${contact.id})">SMS</button>
+                                    <button class="info-btn" onclick="promoteApexLead(${contact.id})">Promote</button>
                                     <button class="delete-btn" onclick="deleteApexContact(${contact.id})">Delete</button>
-                                    ${!contact.promoted ? `<button class="info-btn" onclick="promoteApexLead(${contact.id})">Promote</button>` : ''}
                                 </div>
                                 <div class="contact-field">
                                     <strong>Company:</strong> ${contact.company || 'N/A'}
@@ -2040,9 +2043,14 @@
                                     <strong>Website:</strong> ${contact.website || 'N/A'}
                                 </div>
                                 <div class="contact-field">
+                                    <strong>Lead Class:</strong> <span class="priority-badge priority-${contact.lead_class?.toLowerCase() || 'new'}">${contact.lead_class || 'New'}</span>
+                                </div>
+                                ${contact.address ? `<div class="contact-field"><strong>Address:</strong> ${contact.address}</div>` : ''}
+                                ${contact.notes ? `<div class="contact-field"><strong>Notes:</strong> ${contact.notes}</div>` : ''}
+                                <div class="contact-field">
                                     <strong>Status:</strong>
-                                    <span class="ai-status ${contact.promoted ? 'status-ready' : 'status-pending'}">
-                                        ${contact.promoted ? 'Promoted' : 'Not Promoted'}
+                                    <span class="ai-status status-pending">
+                                        Ready to Promote
                                     </span>
                                 </div>
                             </div>
@@ -2076,6 +2084,9 @@
                         contactsHtml += data.active_apex_leads.map(contact => `
                             <div class="contact-item">
                                 <div class="contact-actions">
+                                    <button class="info-btn" onclick="moreInfoApex(${contact.id})">More Info</button>
+                                    <button class="enquire-btn" onclick="emailApex(${contact.id})">Email</button>
+                                    <button class="enquire-btn1" onclick="smsApex(${contact.id})">SMS</button>
                                     <button class="delete-btn" onclick="deleteApexContact(${contact.id})">Delete</button>
                                     <span class="ai-status status-ready">🌟 Active Lead</span>
                                 </div>
@@ -2095,6 +2106,11 @@
                                     <strong>Website:</strong> ${contact.website || 'N/A'}
                                 </div>
                                 <div class="contact-field">
+                                    <strong>Lead Class:</strong> <span class="priority-badge priority-${contact.lead_class?.toLowerCase() || 'new'}">${contact.lead_class || 'New'}</span>
+                                </div>
+                                ${contact.address ? `<div class="contact-field"><strong>Address:</strong> ${contact.address}</div>` : ''}
+                                ${contact.notes ? `<div class="contact-field"><strong>Notes:</strong> ${contact.notes}</div>` : ''}
+                                <div class="contact-field">
                                     <strong>Type:</strong> Apex Research
                                 </div>
                             </div>
@@ -2108,6 +2124,9 @@
                         contactsHtml += data.active_super_leads.map(contact => `
                             <div class="contact-item">
                                 <div class="contact-actions">
+                                    <button class="info-btn" onclick="moreInfoSuper(${contact.id})">More Info</button>
+                                    <button class="enquire-btn" onclick="emailSuper(${contact.id})">Email</button>
+                                    <button class="enquire-btn1" onclick="smsSuper(${contact.id})">SMS</button>
                                     <button class="delete-btn" onclick="deleteSuperContact(${contact.id})">Delete</button>
                                     <span class="ai-status status-ready">🌟 Active Lead</span>
                                 </div>
@@ -2126,6 +2145,11 @@
                                 <div class="contact-field">
                                     <strong>Website:</strong> ${contact.website || 'N/A'}
                                 </div>
+                                <div class="contact-field">
+                                    <strong>Lead Class:</strong> <span class="priority-badge priority-${contact.lead_class?.toLowerCase() || 'new'}">${contact.lead_class || 'New'}</span>
+                                </div>
+                                ${contact.address ? `<div class="contact-field"><strong>Address:</strong> ${contact.address}</div>` : ''}
+                                ${contact.notes ? `<div class="contact-field"><strong>Notes:</strong> ${contact.notes}</div>` : ''}
                                 <div class="contact-field">
                                     <strong>Type:</strong> Super Researcher
                                 </div>
@@ -2163,8 +2187,11 @@
                         contactsHtml += data.apex_leads.map(contact => `
                             <div class="contact-item">
                                 <div class="contact-actions">
-                                    <button class="delete-btn" onclick="deleteApexContact(${contact.id})">Delete</button>
+                                    <button class="info-btn" onclick="moreInfoApex(${contact.id})">More Info</button>
+                                    <button class="enquire-btn" onclick="emailApex(${contact.id})">Email</button>
+                                    <button class="enquire-btn1" onclick="smsApex(${contact.id})">SMS</button>
                                     <span class="ai-status status-ready">✓ Promoted</span>
+                                    <button class="delete-btn" onclick="deleteApexContact(${contact.id})">Delete</button>
                                 </div>
                                 <div class="contact-field">
                                     <strong>Company:</strong> ${contact.company || 'N/A'}
@@ -2195,8 +2222,11 @@
                         contactsHtml += data.super_leads.map(contact => `
                             <div class="contact-item">
                                 <div class="contact-actions">
-                                    <button class="delete-btn" onclick="deleteSuperContact(${contact.id})">Delete</button>
+                                    <button class="info-btn" onclick="moreInfoSuper(${contact.id})">More Info</button>
+                                    <button class="enquire-btn" onclick="emailSuper(${contact.id})">Email</button>
+                                    <button class="enquire-btn1" onclick="smsSuper(${contact.id})">SMS</button>
                                     <span class="ai-status status-ready">✓ Promoted</span>
+                                    <button class="delete-btn" onclick="deleteSuperContact(${contact.id})">Delete</button>
                                 </div>
                                 <div class="contact-field">
                                     <strong>Company:</strong> ${contact.company || 'N/A'}
@@ -2376,6 +2406,45 @@
                 alert('Error promoting staged leads to active leads: ' + error.message);
             });
         }
+
+        // Apex Research Actions
+        function moreInfoApex(contactId) {
+            // Redirect to more info page for apex contact using existing manual leads endpoint
+            window.location.href = `/moreinfo/${contactId}/`;
+        }
+
+        function emailApex(contactId) {
+            // Redirect to email composition page for apex contact
+            window.location.href = `/render_email/${contactId}/`;
+        }
+
+        function smsApex(contactId) {
+            // Redirect to SMS composition page for apex contact
+            window.location.href = `/render_sms/${contactId}/`;
+        }
+
+
+
+
+        
+
+        // Super Researcher Actions
+        function moreInfoSuper(contactId) {
+            // Redirect to more info page for super contact using existing manual leads endpoint
+            window.location.href = `/moreinfo/${contactId}/`;
+        }
+
+        function emailSuper(contactId) {
+            // Redirect to email composition page for super contact
+            window.location.href = `/render_email/${contactId}/`;
+        }
+
+        function smsSuper(contactId) {
+            // Redirect to SMS composition page for super contact
+            window.location.href = `/render_sms/${contactId}/`;
+        }
+
+
     </script>
 </body>
 </html>

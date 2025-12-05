@@ -1,87 +1,85 @@
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.document_loaders import TextLoader
-from langchain_neo4j import Neo4jVector
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from pydantic import BaseModel, Field
+from typing import List, Optional
+from google.adk.agents import LlmAgent  
+from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
+from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
+from mcp import StdioServerParameters
+from google.adk.models.lite_llm import LiteLlm
 import os
-from dotenv import load_dotenv
-from smolagents import ToolCallingAgent, Tool, OpenAIServerModel
-from langchain.tools import tool
+from dotenv import load_dotenv 
+from prompting import research_prompt
 
-# Load environment variables
+# litellm._turn_on_debug()
 load_dotenv()
 
-# Initialize your Neo4j vector database
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-url = os.getenv("NEO4J_URL")
-username = os.getenv("NEO4J_USERNAME")
-password = os.getenv("NEO4J_PASSWORD")
-
-# Load and split documents
-loader = TextLoader("/Users/zacharyaldin/Downloads/Pagani Zonda R Specifications and Performance Details.html")  # Replace with your actual file path
-documents = loader.load()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-docs = text_splitter.split_documents(documents)
-
-# Create embeddings and database
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large", api_key=OPENAI_API_KEY)
-
-db = Neo4jVector.from_documents(
-    docs, 
-    embeddings, 
-    url=url, 
-    username=username, 
-    password=password, 
-    # search_type="similarity"
+# Create the LiteLlm model instance
+model = LiteLlm(
+    # model = model_name_at_endpoint,
+    # base_url=api_base_url
+    stream = True,
+    model = "openai/glm-4.6",
+    api_key=os.getenv("GLM_API_KEY"),
+    base_url="https://api.z.ai/api/paas/v4/"
 )
 
 
+# Get the absolute path to the crawl4ai-mcp-server directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+crawl4ai_server_path = os.path.join(parent_dir, "crawl4ai-mcp-server")
 
-model = OpenAIServerModel(
-    model_id="local-model",
-    api_base="http://localhost:1234/v1",
-    api_key="Faaahhh",
+root_agent = LlmAgent(
+    name="research", 
+    output_key='research_output', 
+    # output_schema=TopLevelOutput,
+    instruction=research_prompt,
+    model=model,  # Add this line
+    tools=[
+        McpToolset(
+            connection_params=StdioConnectionParams(
+                server_params = StdioServerParameters(
+                    command="uvx",  # The command to run the server
+                    args=["duckduckgo-mcp-server"]  # Path to server script and transport mode
+                )
+            )
+        ),
+        # McpToolset(
+        #     connection_params=StdioConnectionParams(
+        #         timeout=20,
+        #         server_params=StdioServerParameters(
+        #             command="npx",
+        #             args=[
+        #                 "-y", "mcp-searxng"
+        #             ],
+        #             env={
+        #                 "SEARXNG_URL": "YOUR_SEARXNG_INSTANCE_URL"
+        #             }
+        #         )
+        #     )
+        # ),
+        McpToolset(
+            connection_params=StdioConnectionParams(
+                timeout=20,
+                server_params=StdioServerParameters(
+                    command="python",
+                    args=[
+                        "-m", "crawler_agent.mcp_server",
+                    ],
+                    env={
+                        "PYTHONPATH": crawl4ai_server_path,
+                    }
+                )
+            )
+        ),
+        McpToolset(
+            connection_params=StdioConnectionParams(
+                timeout=20,
+                server_params=StdioServerParameters(
+                    command="uvx",
+                args=["mcp-neo4j-cypher@0.5.1", "--transport", "stdio"],
+                )
+            )
+        )  
+    ]
 )
 
-
-@tool(response_format="content_and_artifact")
-def retrieve_context(query: str):
-    """Retrieve information to help answer a query."""
-    try:
-        retrieved_docs = db.similarity_search(query, k=2)
-        if not retrieved_docs:
-            return "No documents found", []
-        
-        serialized = "\n\n".join(
-            (f"Source: {doc.metadata}\nContent: {doc.page_content}")
-            for doc in retrieved_docs
-        )
-        return serialized, retrieved_docs
-    except Exception as e:
-        return f"Error retrieving documents: {str(e)}", []
-
-retrieve = Tool.from_langchain(retrieve_context)
-
-
-# Create agent with the retrieval tool
-agent = ToolCallingAgent(
-    tools=[retrieve], 
-    model=model,
-    max_steps=5
-)
-
-# Example usage
-queries = [
-    "What is the weight of the pagani zonda r?",
-    "Tell me about the engine specifications of the pagani zonda r.",
-    "What is the top speed of the pagani zonda r?"
-
-]
-
-for query in queries:
-    print(f"\n{'='*60}")
-    print(f"Query: {query}")
-    print(f"{'='*60}")
-    
-    response = agent.run(query)
-    print(f"Agent response: {response}")
-    print(f"{'='*60}\n")

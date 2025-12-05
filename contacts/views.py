@@ -477,7 +477,7 @@ def show_promoted_contacts(request):
 
 def render_apex(request):
     if request.method == "POST" or request.method == "GET":
-        apex_contacts = apex_research.objects.all()
+        apex_contacts = apex_research.objects.filter(promoted=False)
         return JsonResponse({'apex_contacts': list(apex_contacts.values())})
 
 def add_apex(request):
