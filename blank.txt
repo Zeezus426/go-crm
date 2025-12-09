@@ -1,2 +1,6 @@
-Run the superduper researcher docker file. Still have yet to make it completely autonomous
-docker run --rm -it super-researcher
+Running the redis container
+    docker run -p 6379:6379 redis
+
+Running celery:
+    celery -A core worker --loglevel=info     
+
