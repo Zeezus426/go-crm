@@ -161,3 +161,11 @@ SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
 
 TWILIO_ACCOUNT=os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH=os.getenv("TWILIO_AUTH_TOKEN")
+
+
+CELERY_TIMEZONE = "Australia/Sydney"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
