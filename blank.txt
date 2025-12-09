@@ -1,0 +1,2 @@
+Run the superduper researcher docker file. Still have yet to make it completely autonomous
+docker run --rm -it super-researcher

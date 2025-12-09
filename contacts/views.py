@@ -5,7 +5,6 @@ from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404   
 from .models import Contact, sent_emails, sent_sms
 from .forms import ContactForm
-from django.template.loader import get_template
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.db.models import Q

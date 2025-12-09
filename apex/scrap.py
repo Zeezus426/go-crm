@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import csv
-from selenium import webdriver
 import threading
 
 def scrape_tenders(url):
@@ -66,31 +65,31 @@ def scrape_tenders(url):
         print(f"Error parsing the HTML: {e}")
         return []
 
-def save_to_csv(tenders, filename='tenders.csv'):
-    """
-    Save the tender data to a CSV file
-    """
-    if not tenders:
-        print("No tenders to save")
-        return
+# def save_to_csv(tenders, filename='tenders.csv'):
+#     """
+#     Save the tender data to a CSV file
+#     """
+#     if not tenders:
+#         print("No tenders to save")
+#         return
     
-    # Define the field names
-    fieldnames = ['title', 'link', 'country', 'posting_date', 'deadline']
+#     # Define the field names
+#     fieldnames = ['title', 'link', 'country', 'posting_date', 'deadline']
     
-    # Write to CSV
-    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(tenders)
+#     # Write to CSV
+#     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+#         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+#         writer.writeheader()
+#         writer.writerows(tenders)
     
-    print(f"Saved {len(tenders)} tenders to {filename}")
+#     print(f"Saved {len(tenders)} tenders to {filename}")
 
-def more_info(url):
-    driver = webdriver.Chrome()
-    driver.get(url)
-    button = driver.find_element_by_class_name("btn btn-new")
-    button.click()
-    driver.quit()
+# def more_info(url):
+#     driver = webdriver.Chrome()
+#     driver.get(url)
+#     button = driver.find_element_by_class_name("btn btn-new")
+#     button.click()
+#     driver.quit()
 
 
 def main():
@@ -99,13 +98,13 @@ def main():
     
     print("Scraping tenders...")
     tenders = scrape_tenders(url)
-    more_info(url)
+    # more_info(url)
     
     if tenders:
         print(f"Found {len(tenders)} tenders")
         
         # Print the first 5 tenders as an example
-        for i, tender in enumerate(tenders[:5]):
+        for i, tender in enumerate(tenders[:20]):
             print(f"\nTender {i+1}:")
             print(f"Title: {tender['title']}")
             print(f"Link: {tender['link']}")
@@ -113,8 +112,7 @@ def main():
             print(f"Posting Date: {tender['posting_date']}")
             print(f"Deadline: {tender['deadline']}")
         
-        # Save all tenders to CSV
-        save_to_csv(tenders)
+
     else:
         print("No tenders found or an error occurred")
 
