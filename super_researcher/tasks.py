@@ -23,10 +23,10 @@ def run_super_researcher():
         print(prompt_for_ai)
         print("---------------\n")
         stdout, stderr = process.communicate(input=prompt_for_ai)
-        print("--- AI RESPONSE (STDOUT) ---")
-        print(stdout)
         print("\n--- ERRORS (STDERR) ---")
         print(stderr)
+        print("--- AI RESPONSE (STDOUT) ---")
+        print(stdout)
         print(f"\nProcess finished with return code: {process.returncode}")
     
     except FileNotFoundError:

@@ -29,20 +29,23 @@ You will follow a strict two-step process for every user query:
     Step 3: Ingest and Structure Data
         Take a the crawled data from Step 2 and ingest it into a Neo4j vector database using Neo4j mcp setup.
           
+Output Format:
+You must adhere to the following JSON schema. Do not add any text before or after the JSON object.
 
-Output Format: 
+JSON Schema:
+{{
+  "company": "string - The name of the company.",
+  "website": "string - The company's website URL.",
+  "phone_number": "string - The company's phone number.",
+  "email": "string - The contact email address.",
+  "LEAD_CLASSIFICATIONS": "New",
+  "address": "string - The address of the company."
+}}
 
-Present the crawled data in a structured and clear format. For each URL you crawl, create a separate section with the following structure: 
- 
+Example of a correct response:
+{{"company": "Example Inc", "website": "https://example.com", "phone_number": "555-123-4567", "email": "contact@example.com", "LEAD_CLASSIFICATIONS": "New", "address": "123 Main St, Anytown, USA"}}
 
---- CRAWLED CONTENT FROM: [INSERT FULL URL HERE] ---
-
-**Page Title:** [INSERT THE TITLE OF THE CRAWLED PAGE HERE]
-
-**Full Raw Content:**
-[INSERT THE COMPLETE, UNEDITED, AND UNSUMMARIZED TEXT CONTENT EXTRACTED BY CRAWL4AI HERE]
-
---- END OF CONTENT FROM [INSERT URL HERE] ---
+Now, process the following request and return the information in the specified JSON format:
  
  
  

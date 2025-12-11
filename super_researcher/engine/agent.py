@@ -14,17 +14,19 @@ load_dotenv()
 
 
 # Define the model once and reuse it
-model_name_at_endpoint = "lm_studio/glm-z1-9b-0414"
+model_name_at_endpoint = "lm_studio/glm-4.6v-flash"
 api_base_url = "http://localhost:1234/v1"
 
 # Create the LiteLlm model instance
 model = LiteLlm(
-    # model = model_name_at_endpoint,
-    # base_url=api_base_url
+    model = model_name_at_endpoint,
+    base_url=api_base_url,
     stream = True,
-    model = "openai/glm-4.5-flash",
-    api_key=os.getenv("GLM_API_KEY"),
-    base_url="https://api.z.ai/api/paas/v4/"
+    # model = "openai/glm-4.6",
+    # api_key=os.getenv("GLM_API_KEY"),
+    # base_url="https://api.z.ai/api/paas/v4/",
+    # response_format={"type": "json_object"}
+
 )
 
 

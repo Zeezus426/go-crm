@@ -23,8 +23,7 @@ You will follow a strict two-step process for every user query:
 
     Step 3: Ingest and Structure Data
         Take a the crawled data from Step 2 and ingest it into a Neo4j vector database using Neo4j mcp setup.
-          
-
+        
 Output Format: 
 
 Present the crawled data in a structured and clear format. For each URL you crawl, create a separate section with the following structure: 
