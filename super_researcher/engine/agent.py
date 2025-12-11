@@ -22,7 +22,7 @@ model = LiteLlm(
     # model = model_name_at_endpoint,
     # base_url=api_base_url
     stream = True,
-    model = "openai/glm-4.6-flash",
+    model = "openai/glm-4.5-flash",
     api_key=os.getenv("GLM_API_KEY"),
     base_url="https://api.z.ai/api/paas/v4/"
 )
@@ -41,7 +41,7 @@ class ResearchOutput(BaseModel):
 root_agent = LlmAgent(
     name="research", 
     output_key='research_output', 
-    output_schema=ResearchOutput,
+    # output_schema=ResearchOutput,
     instruction=research_prompt,
     model=model,  # Add this line
     tools=[
@@ -84,14 +84,19 @@ root_agent = LlmAgent(
             )
         ),
         McpToolset(
-            connection_params=StdioConnectionParams(
-                timeout=20,
-                server_params=StdioServerParameters(
-                    command="uvx",
-                args=["mcp-neo4j-cypher@0.5.1", "--transport", "stdio"],
-                )
-            )
-        )  
+        connection_params=StdioConnectionParams(
+            timeout=20,
+            server_params=StdioServerParameters(
+                command="uvx",
+                args=["mcp-neo4j-cypher@0.5.1", "--transport", "stdio"
+                ],
+                env={"NEO4J_URI": "bolt://localhost:7687",
+        "NEO4J_USERNAME": "neo4j",
+        "NEO4J_PASSWORD": "<your-password>",
+        "NEO4J_DATABASE": "neo4j"}
+        )
+    )
+)
     ]
 )
 
