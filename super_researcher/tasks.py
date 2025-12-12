@@ -36,4 +36,3 @@ def run_super_researcher():
         print(f"An unexpected error occurred: {e}")
 
 
-run_super_researcher()

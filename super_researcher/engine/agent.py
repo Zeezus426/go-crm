@@ -38,6 +38,7 @@ class ResearchOutput(BaseModel):
     email: str = Field(..., description="The contact email address.")
     LEAD_CLASSIFICATIONS: Literal["New"]
     address: str = Field(..., description="The address of the company.")
+    notes: str = Field(..., description="Additional notes about the company, What they do, etc.")
     
 
 root_agent = LlmAgent(
