@@ -1,6 +1,9 @@
 Running the redis container
     docker run -p 6379:6379 redis
 
+Initalizing the server:
+    redis-server
+
 Running celery:
     celery -A core worker --loglevel=info     
 

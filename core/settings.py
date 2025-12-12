@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
+from celery.schedules import crontab
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -165,8 +166,11 @@ TWILIO_AUTH=os.getenv("TWILIO_AUTH_TOKEN")
 
 
 CELERY_TIMEZONE = "Australia/Sydney"
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BROKER_URL = os.getenv("REDIS_HOST")
 
-
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULE = {
+    "RunSuperResearcher": {
+        "task": "super_researcher.tasks.save_research_output",
+        "schedule": crontab(hour=1),
+    },
+}
