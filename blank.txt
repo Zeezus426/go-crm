@@ -20,3 +20,10 @@ docker run -p 9021:8000 \
 
 
 Running the adk engine 
+
+
+
+
+npx create-next-app@latest frontend --yes
+cd frontend
+npm run dev
