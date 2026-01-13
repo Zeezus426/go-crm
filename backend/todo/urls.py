@@ -1,7 +1,8 @@
 # urls.py
 from django.urls import path
 from . import views
-
+# Arbitrary urls will be sunsetted in favour of the django ninja api points
+# No longer used
 urlpatterns = [
     path('', views.index, name="todo"),
     path('del/<str:item_id>', views.remove, name="del"),

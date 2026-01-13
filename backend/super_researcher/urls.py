@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-
+# Arbitrary urls will be sunsetted in favour of the django ninja api points
+# No longer used
 app_name = 'super_researcher'
 
 urlpatterns = [
