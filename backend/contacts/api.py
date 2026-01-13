@@ -1,4 +1,5 @@
 from ninja import NinjaAPI, ModelSchema
+from ninja.security import django_auth
 from .models import Contact, sent_emails, sent_sms
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse

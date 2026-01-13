@@ -21,7 +21,7 @@ from contacts.api import contact_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/", contact_api.urls),
+    path("contact_api/", contact_api.urls),
     path("", include('mcp_server.urls')),
     path('accounts/', include('allauth.urls')),
     path('', include('contacts.urls')),
