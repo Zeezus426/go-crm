@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-
+# Arbitrary urls will be sunsetted in favour of the django ninja api points
 urlpatterns = [
     # Renders the index page with the list of contacts
     path('index/', contact_list_view, name='home'),
