@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from todo import views
 from contacts.api import contact_api
+from todo.api import todo_api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("contact_api/", contact_api.urls),
+    path("todo_api/", todo_api.urls),
     path("", include('mcp_server.urls')),
     path('accounts/', include('allauth.urls')),
     path('', include('contacts.urls')),
