@@ -17,42 +17,42 @@ export const contactsApi = {
     if (filters?.search) params.search = filters.search;
     if (filters?.sort_by) params.sort_by = filters.sort_by;
 
-    return apiClient.get<Contact[]>('/contact_api/index', params);
+    return apiClient.get<Contact[]>('/api/contact/index', params);
   },
 
   // Get single contact by ID
   getContactById: async (contact_id: number): Promise<Contact> => {
-    return apiClient.get<Contact>(`/contact_api/moreinfo/${contact_id}`);
+    return apiClient.get<Contact>(`/api/contact/moreinfo/${contact_id}`);
   },
 
   // Create new contact
   createContact: async (data: ContactFormData): Promise<Contact> => {
-    return apiClient.post<Contact>('/contact_api/add', data);
+    return apiClient.post<Contact>('/api/contact/add', data);
   },
 
   // Update existing contact
   updateContact: async (contact_id: number, data: ContactFormData): Promise<Contact> => {
-    return apiClient.post<Contact>(`/contact_api/update/${contact_id}`, data);
+    return apiClient.post<Contact>(`/api/contact/update/${contact_id}`, data);
   },
 
   // Delete contact
   deleteContact: async (contact_id: number): Promise<{ success: boolean; message: string }> => {
-    return apiClient.delete<{ success: boolean; message: string }>(`/contact_api/delete/${contact_id}`);
+    return apiClient.delete<{ success: boolean; message: string }>(`/api/contact/delete/${contact_id}`);
   },
 
   // Send email to contact
   sendEmail: async (contact_id: number, data: EmailFormData): Promise<SentEmail> => {
-    return apiClient.post<SentEmail>(`/contact_api/send-email/${contact_id}`, data);
+    return apiClient.post<SentEmail>(`/api/contact/send-email/${contact_id}`, data);
   },
 
   // Send SMS to contact
   sendSms: async (contact_id: number, data: SmsFormData): Promise<SentSms> => {
-    return apiClient.post<SentSms>(`/contact_api/send-sms/${contact_id}`, data);
+    return apiClient.post<SentSms>(`/api/contact/send-sms/${contact_id}`, data);
   },
 
   // Get contact's email history
   getContactEmails: async (contact_id: number): Promise<SentEmail[]> => {
-    return apiClient.get<SentEmail[]>(`/contact_api/contact-emails/${contact_id}`);
+    return apiClient.get<SentEmail[]>(`/api/contact/contact-emails/${contact_id}`);
   },
 
   // Get all communication logs
@@ -73,6 +73,6 @@ export const contactsApi = {
       sent_at: string;
     }>;
   }> => {
-    return apiClient.get('/contact_api/communication-logs');
+    return apiClient.get('/api/contact/communication-logs');
   },
 };

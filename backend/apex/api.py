@@ -1,4 +1,4 @@
-from ninja import NinjaAPI, ModelSchema
+from ninja import ModelSchema, Router
 from .models import apex_research
 from .scrap import main
 from .models import apex_research
@@ -21,23 +21,22 @@ class Apex_schema(ModelSchema):
             'address',
         ]
 
-api = NinjaAPI()
+apex_router = Router()
 
-
-@api.get("/home")
+@apex_router.get("/home")
 def apex_home(request, pk: int, payload : Apex_schema ):
     tenders = main()
     return {"tenders": tenders}
 
 
-@api.get("/contacts")
+@apex_router.get("/contacts")
 def get_apex_research_contacts(request, pk: int, payload : Apex_schema ):
     """Retrieves all non-promoted Apex Research contacts."""
     apex_contacts = apex_research.objects.filter(promoted=False)
     return {"apex_contacts": list(apex_contacts.values())}
 
 
-@api.post("/contacts")
+@apex_router.post("/contacts")
 def add_apex_research_contact(request,  pk: int, payload : Apex_schema ):
     """Creates a new Apex Research contact."""
     apex_contact = apex_research.objects.create(
@@ -55,7 +54,7 @@ def add_apex_research_contact(request,  pk: int, payload : Apex_schema ):
     return {"success": True, "message": "Apex Research contact added successfully", "id": apex_contact.id}
 
 
-@api.post("/contacts/{contact_id}/promote")
+@apex_router.post("/contacts/{contact_id}/promote")
 def promote_apex_research_contact(request, contact_id: int, payload : Apex_schema):
     """Marks an Apex Research contact as promoted."""
     try:

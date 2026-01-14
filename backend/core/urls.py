@@ -17,13 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from todo import views
-from contacts.api import contact_api
-from todo.api import todo_api
+from core.api import core_router
+from contacts.api import contact_router
+from todo.api import todo_router
+from ninja import NinjaAPI
 
+api = NinjaAPI()
+
+api.add_router("core", core_router)
+api.add_router("contact", contact_router)
+api.add_router("todo", todo_router)
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("contact_api/", contact_api.urls),
-    path("todo_api/", todo_api.urls),
+    path("api/", api.urls), 
+# Arbitrary urls will be sunsetted in favour of the django ninja api points see above
+# No longer used
     path("", include('mcp_server.urls')),
     path('accounts/', include('allauth.urls')),
     path('', include('contacts.urls')),
