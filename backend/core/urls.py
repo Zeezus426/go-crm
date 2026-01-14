@@ -20,6 +20,7 @@ from todo import views
 from contacts.api import contact_router
 from todo.api import todo_router
 from user.api import auth_router
+from user.models import CustomUser
 from ninja import NinjaAPI
 # from rest_framework.authtoken.models import Token
 # from rest_framework.authentication import TokenAuthentication
@@ -33,13 +34,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", api.urls), 
     path('rest-auth/', include('dj_rest_auth.urls')),
-# Arbitrary urls will be sunsetted in favour of the django ninja api points see above
-# No longer used
+
     path("", include('mcp_server.urls')),
-    path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('allauth.urls')), # Commented out - allauth not configured
     path('', include('contacts.urls')),
     path('todo/', include('todo.urls')),
     path('super_researcher/', include('super_researcher.urls')),
+    path("user/", include('user.urls')),
+    path('apex/', include('apex.urls')),
 
     # Debug to be removed in production
     path('__debug__/', include('debug_toolbar.urls')),
