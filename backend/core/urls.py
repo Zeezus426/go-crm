@@ -17,14 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from todo import views
-from core.api import core_router
 from contacts.api import contact_router
 from todo.api import todo_router
 from ninja import NinjaAPI
 
 api = NinjaAPI()
 
-api.add_router("core", core_router)
 api.add_router("contact", contact_router)
 api.add_router("todo", todo_router)
 urlpatterns = [
