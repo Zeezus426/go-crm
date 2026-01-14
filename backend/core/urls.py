@@ -19,22 +19,14 @@ from django.urls import path, include, re_path
 from todo import views
 from contacts.api import contact_router
 from todo.api import todo_router
+from user.api import auth_router
 from ninja import NinjaAPI
-from ninja.security import HttpBearer
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
 
-class TokenAuth(HttpBearer):
-    def authenticate(self, request, token):
-        try:
-            token_obj = Token.objects.select_related('user').get(key=token)
-            if token_obj.user.is_active:
-                return token_obj.user
-        except Token.DoesNotExist:
-            pass
-        return None
+api = NinjaAPI(auth=TokenAuthentication())
 
-api = NinjaAPI(auth=TokenAuth())
-
+api.add_router("auth", auth_router)
 api.add_router("contact", contact_router)
 api.add_router("todo", todo_router)
 urlpatterns = [

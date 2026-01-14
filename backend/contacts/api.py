@@ -65,7 +65,7 @@ class SentSmsSchema(ModelSchema):
 contact_router = Router()
 
 
-@contact_router.get("/index", response=list[ContactSchema])
+@contact_router.get("/index", response=list[ContactSchema], auth=django_auth)
 def contact_list(request):
     lead_class = request.GET.get('lead_class')
     search_query = request.GET.get('search')
@@ -89,7 +89,7 @@ def contact_list(request):
     return contacts
 
 
-@contact_router.post("/add", response=ContactSchema)
+@contact_router.post("/add", response=ContactSchema, auth=django_auth)
 def create_contact(request, payload: ContactCreateSchema):
     contact = Contact.objects.create(
         Full_name=payload.Full_name,
@@ -102,12 +102,12 @@ def create_contact(request, payload: ContactCreateSchema):
     )
     return contact
 
-@contact_router.get("/moreinfo/{contact_id}", response=ContactSchema)
+@contact_router.get("/moreinfo/{contact_id}", response=ContactSchema, auth=django_auth)
 def contact_detail(request, contact_id: int):
     contact = get_object_or_404(Contact, pk=contact_id)
     return contact
 
-@contact_router.post("/update/{contact_id}", response=ContactSchema)
+@contact_router.post("/update/{contact_id}", response=ContactSchema, auth=django_auth)
 def edit_contact(request, contact_id: int, payload: ContactCreateSchema):
     try:
         contact = Contact.objects.get(pk=contact_id)
@@ -124,7 +124,7 @@ def edit_contact(request, contact_id: int, payload: ContactCreateSchema):
         from ninja.errors import HttpError
         raise HttpError(404, 'Contact not found')
 
-@contact_router.delete("/delete/{contact_id}", response=dict)
+@contact_router.delete("/delete/{contact_id}", response=dict, auth=django_auth)
 def delete_contact(request, contact_id: int):
     try:
         contact = get_object_or_404(Contact, pk=contact_id)
@@ -136,7 +136,7 @@ def delete_contact(request, contact_id: int):
         raise HttpError(500, str(e))
 
 
-@contact_router.post("/send-email/{contact_id}", response=SentEmailSchema)
+@contact_router.post("/send-email/{contact_id}", response=SentEmailSchema, auth=django_auth)
 def send_email_endpoint(request, contact_id: int, payload: dict):
     try:
         contact = get_object_or_404(Contact, pk=contact_id)
@@ -175,7 +175,7 @@ def send_email_endpoint(request, contact_id: int, payload: dict):
         from ninja.errors import HttpError
         raise HttpError(500, f'Failed to send email: {str(e)}')
 
-@contact_router.post("/send-sms/{contact_id}", response=SentSmsSchema)
+@contact_router.post("/send-sms/{contact_id}", response=SentSmsSchema, auth=django_auth)
 def send_sms_endpoint(request, contact_id: int, payload: dict):
     try:
         contact = get_object_or_404(Contact, pk=contact_id)
@@ -209,7 +209,7 @@ def send_sms_endpoint(request, contact_id: int, payload: dict):
         from ninja.errors import HttpError
         raise HttpError(500, f'Failed to send SMS: {str(e)}')
 
-@contact_router.get("/communication-logs", response=dict)
+@contact_router.get("/communication-logs", response=dict, auth=django_auth)
 def get_communication_logs(request):
     email_logs = sent_emails.objects.all().order_by('-sent_at')
     sms_logs = sent_sms.objects.all().order_by('-sent_at')
@@ -237,7 +237,7 @@ def get_communication_logs(request):
 
     return {"emails": email_list, "sms": sms_list}
 
-@contact_router.get("/contact-emails/{contact_id}", response=list[SentEmailSchema])
+@contact_router.get("/contact-emails/{contact_id}", response=list[SentEmailSchema], auth=django_auth)
 def get_contact_emails(request, contact_id: int):
     contact = get_object_or_404(Contact, pk=contact_id)
     emails = sent_emails.objects.filter(contact=contact).order_by('-sent_at')

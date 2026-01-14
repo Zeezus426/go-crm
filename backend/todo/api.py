@@ -30,7 +30,7 @@ class TodoCreateSchema(ModelSchema):
 todo_router = Router()
 
 
-@todo_router.get("/index", response=List[TodoSchema])
+@todo_router.get("/index", response=List[TodoSchema], auth=django_auth)
 def todo_list(request):
     """Get all todos ordered by date (newest first)"""
     todos = Todo.objects.order_by("-date")
@@ -49,7 +49,7 @@ def todo_stats(request):
         'completed': completed_count
     }
 
-@todo_router.post("/add", response=TodoSchema)
+@todo_router.post("/add", response=TodoSchema, auth=django_auth)
 def create_todo(request, payload: TodoCreateSchema):
     """Create a new todo"""
     todo = Todo.objects.create(
@@ -61,13 +61,13 @@ def create_todo(request, payload: TodoCreateSchema):
 
     return todo
 
-@todo_router.get("/moreinfo/{todo_id}", response=TodoSchema)
+@todo_router.get("/moreinfo/{todo_id}", response=TodoSchema, auth=django_auth)
 def todo_detail(request, todo_id: int):
     """Get a single todo by ID"""
     todo = get_object_or_404(Todo, pk=todo_id)
     return todo
 
-@todo_router.post("/update/{todo_id}", response=TodoSchema)
+@todo_router.post("/update/{todo_id}", response=TodoSchema, auth=django_auth)
 def update_todo(request, todo_id: int, payload: TodoCreateSchema):
     """Update an existing todo"""
     try:
@@ -81,7 +81,7 @@ def update_todo(request, todo_id: int, payload: TodoCreateSchema):
         from ninja.errors import HttpError
         raise HttpError(404, 'Todo not found')
 
-@todo_router.delete("/delete/{todo_id}", response=dict)
+@todo_router.delete("/delete/{todo_id}", response=dict, auth=django_auth)
 def delete_todo(request, todo_id: int):
     """Delete a todo"""
     try:
@@ -93,7 +93,7 @@ def delete_todo(request, todo_id: int):
         from ninja.errors import HttpError
         raise HttpError(500, str(e))
 
-@todo_router.post("/toggle/{todo_id}", response=TodoSchema)
+@todo_router.post("/toggle/{todo_id}", response=TodoSchema, auth=django_auth)
 def toggle_todo(request, todo_id: int):
     """Toggle todo completion status"""
     try:
