@@ -7,6 +7,7 @@ import { useResearchPipeline } from '@/lib/hooks/useResearch';
 import { useRouter } from 'next/navigation';
 import { Loader } from '@/components/ui/Loader';
 
+
 export default function ResearchPage() {
   const { stagedLeads, activeLeads, loading, error, promoteApexContact } = useResearchPipeline();
   const router = useRouter();

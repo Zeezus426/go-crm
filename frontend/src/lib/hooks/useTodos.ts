@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { todosApi } from '../api/todos';
 import { Todo, TodoFormData, TodoFilters } from '../types/todos';
 import { ApiError } from '../api/client';
+import { authApi } from '../api/auth';
 
 export function useTodos(filters?: TodoFilters) {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -53,6 +54,7 @@ export function useTodos(filters?: TodoFilters) {
     setError(null);
     try {
       const result = await todosApi.updateTodo(id, data);
+      await authApi.getCsrfToken
       await fetchTodos();
       return result;
     } catch (err) {

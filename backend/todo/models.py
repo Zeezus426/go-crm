@@ -10,7 +10,7 @@ class Todo(models.Model):
     ]
 
     title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
+    description = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium')

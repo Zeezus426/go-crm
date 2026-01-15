@@ -1,8 +1,8 @@
-from ninja import NinjaAPI, ModelSchema, Router 
+from ninja import NinjaAPI, ModelSchema, Router, Schema
 from ninja.security import django_auth
 from .models import Todo
 from django.shortcuts import get_object_or_404
-from typing import List
+from typing import List, Optional
 
 # Schemas
 class TodoSchema(ModelSchema):
@@ -26,6 +26,12 @@ class TodoCreateSchema(ModelSchema):
             'description',
             'priority',
         ]
+
+
+class TodoUpdateSchema(Schema):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    priority: Optional[str] = None
 
 todo_router = Router()
 
@@ -68,13 +74,16 @@ def todo_detail(request, todo_id: int):
     return todo
 
 @todo_router.post("/update/{todo_id}", response=TodoSchema, auth=django_auth)
-def update_todo(request, todo_id: int, payload: TodoCreateSchema):
+def update_todo(request, todo_id: int, payload: TodoUpdateSchema):
     """Update an existing todo"""
     try:
         todo = Todo.objects.get(pk=todo_id)
-        todo.title = payload.title
-        todo.description = payload.description
-        todo.priority = payload.priority
+        if payload.title is not None:
+            todo.title = payload.title
+        if payload.description is not None:
+            todo.description = payload.description
+        if payload.priority is not None:
+            todo.priority = payload.priority
         todo.save()
         return todo
     except Todo.DoesNotExist:
