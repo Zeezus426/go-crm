@@ -10,7 +10,7 @@ const navigation = [
   { name: 'Apex Research', href: '/apex', icon: '🔬' },
   { name: 'Super Researcher', href: '/super-researcher', icon: '🧪' },
   { name: 'Research Pipeline', href: '/research', icon: '📈' },
-  { name: 'Communications', href: '/communications', icon: '💬' },
+  // { name: 'Communications', href: '/communications', icon: '💬' },
   { name: 'Todos', href: '/todos', icon: '✅' },
 ];
 
