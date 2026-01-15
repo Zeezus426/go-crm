@@ -2,8 +2,9 @@ from sms import send_sms
 from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.utils import timezone
-from django.shortcuts import render, redirect, get_object_or_404   
-from .models import Contact, sent_emails, sent_sms
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Contact
+from communications.models import sent_emails, sent_sms
 from .forms import ContactForm
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
@@ -392,24 +393,24 @@ def sent_emails_history_view(request):
 
 def contact_detail_form_view(request, contact_id):
     """Alternative detailed contact view using Django forms.
-    
+
     Displays contact details with a pre-populated ContactForm and handles
     both AJAX and standard form submissions.
-    
+
     Args:
         request: Django request object.
         contact_id: Primary key of the Contact to display/edit.
-    
+
     Returns:
         HttpResponse: Rendered contact_detail.html template or JSON response
                      for AJAX requests.
-    
+
     Raises:
         Http404: If contact with given ID does not exist.
     """
     contact = get_object_or_404(Contact, pk=contact_id)
-    sent_emails = sent_emails.objects.filter(contact=contact).order_by('-sent_at')
-    
+    contact_emails = sent_emails.objects.filter(contact=contact).order_by('-sent_at')
+
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
@@ -422,10 +423,10 @@ def contact_detail_form_view(request, contact_id):
                 return JsonResponse({'success': False, 'error': form.errors})
     else:
         form = ContactForm(instance=contact)
-    
+
     context = {
         'contact': contact,
-        'sent_emails': sent_emails,
+        'sent_emails': contact_emails,
         'form': form,
     }
     return render(request, 'contact_detail.html', context)
