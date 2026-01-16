@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
-  { name: 'Contacts', href: '/contacts', icon: '👥' },
+  // { name: 'Contacts', href: '/contacts', icon: '👥' },
   { name: 'Apex Research', href: '/apex', icon: '🔬' },
   { name: 'Super Researcher', href: '/super-researcher', icon: '🧪' },
   { name: 'Research Pipeline', href: '/research', icon: '📈' },

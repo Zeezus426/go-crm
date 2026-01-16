@@ -52,7 +52,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Recent Contacts */}
           <Card title="Recent Contacts" actions={
-            <Link href="/contacts">
+            <Link href="/communications">
               <Button variant="ghost" size="sm">View All</Button>
             </Link>
           }>

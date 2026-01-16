@@ -11,6 +11,7 @@ import { ContactForm } from '@/components/contacts/ContactForm';
 import { useContactOperations } from '@/lib/hooks/useContacts';
 import { SendEmailForm } from '@/components/communications/EmailForm';
 import { SendSMSForm } from '@/components/communications/SMSForm';
+import { moreInfoApi } from '@/lib/api/moreinfo';
 import { communicationsApi } from '@/lib/api/communications';
 
 export default function ContactsPage() {
@@ -19,7 +20,11 @@ export default function ContactsPage() {
   const [showModal, setShowModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showSMSModal, setShowSMSModal] = useState(false);
+  const [showMoreInfoModal, setShowMoreInfoModal] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState<number | null>(null);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  const [moreInfoData, setMoreInfoData] = useState<any>(null);
+  const [loadingMoreInfo, setLoadingMoreInfo] = useState(false);
 
   const handleCreateContact = async (data: any) => {
     try {
@@ -59,6 +64,23 @@ export default function ContactsPage() {
     }
   };
 
+  const handleMoreInfo = async (contactId: number) => {
+    try {
+      setLoadingMoreInfo(true);
+      const contact = contacts.find(c => c.id === contactId);
+      setSelectedContact(contact || null);
+      const data = await moreInfoApi.getMoreInfoById(contactId);
+      setMoreInfoData(data);
+      setShowMoreInfoModal(true);
+    } catch (error) {
+      console.error('Failed to fetch more info:', error);
+      alert('Failed to fetch more info. Please try again.');
+    } finally {
+      setLoadingMoreInfo(false);
+    }
+  };
+
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -83,6 +105,7 @@ export default function ContactsPage() {
               setSelectedContactId(contactId);
               setShowSMSModal(true);
             }}
+            onMoreInfo={handleMoreInfo}
           />
         )}
 
@@ -123,6 +146,52 @@ export default function ContactsPage() {
                 setSelectedContactId(null);
               }}
             />
+          )}
+        </Modal>
+
+        <Modal isOpen={showMoreInfoModal} onClose={() => {
+          setShowMoreInfoModal(false);
+          setSelectedContact(null);
+          setMoreInfoData(null);
+        }} title="More Information">
+          {loadingMoreInfo ? (
+            <div className="text-center py-4">Loading...</div>
+          ) : moreInfoData ? (
+            <div className="space-y-4">
+              {selectedContact && (
+                <div className="border-b pb-4">
+                  <h3 className="text-xl font-semibold text-gray-900">{selectedContact.Full_name}</h3>
+                  <p className="text-gray-600">{selectedContact.company}</p>
+                  <span className="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    {selectedContact.lead_class}
+                  </span>
+                </div>
+              )}
+              <div className="grid gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <p className="text-gray-900">{moreInfoData.email || selectedContact?.email}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <p className="text-gray-900">{moreInfoData.phone_number || selectedContact?.phone_number}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                  <p className="text-gray-900">{moreInfoData.address || 'No address provided'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                  <p className="text-gray-900 whitespace-pre-wrap">{moreInfoData.notes || 'No notes provided'}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Created</label>
+                  <p className="text-gray-900">{new Date(moreInfoData.created_at).toLocaleDateString()}</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-4 text-gray-500">No information available</div>
           )}
         </Modal>
       </div>
