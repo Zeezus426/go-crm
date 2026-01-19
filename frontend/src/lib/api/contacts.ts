@@ -32,7 +32,7 @@ export const contactsApi = {
 
   // Update existing contact
   updateContact: async (contact_id: number, data: ContactFormData): Promise<Contact> => {
-    return apiClient.post<Contact>(`/api/contact/update/${contact_id}`, data);
+    return apiClient.put<Contact>(`/api/contacts/update/${contact_id}`, data);
   },
 
   // Delete contact

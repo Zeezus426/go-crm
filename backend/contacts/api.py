@@ -79,7 +79,7 @@ def contact_detail(request, contact_id: int):
     contact = get_object_or_404(Contact, pk=contact_id)
     return contact
 
-@contact_router.post("/update/{contact_id}", response=ContactSchema, auth=django_auth)
+@contact_router.put("/update/{contact_id}", response=ContactSchema, auth=django_auth)
 def edit_contact(request, contact_id: int, payload: ContactCreateSchema):
     try:
         contact = Contact.objects.get(pk=contact_id)

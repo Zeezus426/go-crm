@@ -11,8 +11,9 @@ import { ContactForm } from '@/components/contacts/ContactForm';
 import { useContactOperations } from '@/lib/hooks/useContacts';
 import { SendEmailForm } from '@/components/communications/EmailForm';
 import { SendSMSForm } from '@/components/communications/SMSForm';
-import { moreInfoApi } from '@/lib/api/moreinfo';
-import { communicationsApi } from '@/lib/api/communications';
+import { EditContactForm } from '@/components/communications/EditForm';
+import { communicationsApi, moreInfoApi } from '@/lib/api/communications';
+import { contactsApi } from '@/lib/api/contacts';
 
 export default function ContactsPage() {
   const { contacts, loading, error, refetch } = useContacts();
@@ -21,6 +22,7 @@ export default function ContactsPage() {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showSMSModal, setShowSMSModal] = useState(false);
   const [showMoreInfoModal, setShowMoreInfoModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedContactId, setSelectedContactId] = useState<number | null>(null);
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [moreInfoData, setMoreInfoData] = useState<any>(null);
@@ -80,6 +82,30 @@ export default function ContactsPage() {
     }
   };
 
+  const handleEdit = (contactId: number) => {
+    const contact = contacts.find(c => c.id === contactId);
+    if (contact) {
+      setSelectedContact(contact);
+      setShowEditModal(true);
+    }
+  };
+
+  const handleUpdateContact = async (data: any) => {
+    if (!selectedContactId) return;
+
+    try {
+      await contactsApi.updateContact(selectedContactId, data);
+      setShowEditModal(false);
+      setSelectedContact(null);
+      setSelectedContactId(null);
+      refetch();
+      alert('Contact updated successfully!');
+    } catch (error) {
+      console.error('Failed to update contact:', error);
+      alert('Failed to update contact. Please try again.');
+    }
+  };
+
 
   return (
     <MainLayout>
@@ -106,6 +132,7 @@ export default function ContactsPage() {
               setShowSMSModal(true);
             }}
             onMoreInfo={handleMoreInfo}
+            onEdit={handleEdit}
           />
         )}
 
@@ -192,6 +219,22 @@ export default function ContactsPage() {
             </div>
           ) : (
             <div className="text-center py-4 text-gray-500">No information available</div>
+          )}
+        </Modal>
+
+        <Modal isOpen={showEditModal} onClose={() => {
+          setShowEditModal(false);
+          setSelectedContact(null);
+        }} title="Edit Contact">
+          {selectedContact && (
+            <EditContactForm
+              contact={selectedContact}
+              onSubmit={handleUpdateContact}
+              onCancel={() => {
+                setShowEditModal(false);
+                setSelectedContact(null);
+              }}
+            />
           )}
         </Modal>
       </div>
