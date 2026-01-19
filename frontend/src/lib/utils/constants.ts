@@ -1,4 +1,4 @@
-import { LeadClassification } from '../types/contacts';
+import { LeadClassification } from '../types/contact';
 
 export const LEAD_CLASSIFICATIONS: LeadClassification[] = [
   'New',

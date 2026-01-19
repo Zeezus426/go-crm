@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Contact } from '@/lib/types/contacts';
+import { Contact } from '@/lib/types/contact';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 

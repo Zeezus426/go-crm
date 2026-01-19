@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { ContactList } from '@/components/contacts/ContactList';
 import { useContacts } from '@/lib/hooks/useContacts';
-import { Contact } from '@/lib/types/contacts';
+import { Contact } from '@/lib/types/contact';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { ContactForm } from '@/components/contacts/ContactForm';
@@ -12,7 +12,7 @@ import { useContactOperations } from '@/lib/hooks/useContacts';
 import { SendEmailForm } from '@/components/communications/EmailForm';
 import { SendSMSForm } from '@/components/communications/SMSForm';
 import { EditContactForm } from '@/components/communications/EditForm';
-import { communicationsApi, moreInfoApi } from '@/lib/api/communications';
+import { communicationsApi} from '@/lib/api/communications';
 import { contactsApi } from '@/lib/api/contacts';
 
 export default function ContactsPage() {
@@ -71,7 +71,7 @@ export default function ContactsPage() {
       setLoadingMoreInfo(true);
       const contact = contacts.find(c => c.id === contactId);
       setSelectedContact(contact || null);
-      const data = await moreInfoApi.getMoreInfoById(contactId);
+      const data = await contactsApi.getMoreInfoById(contactId);
       setMoreInfoData(data);
       setShowMoreInfoModal(true);
     } catch (error) {

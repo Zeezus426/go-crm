@@ -7,7 +7,11 @@ import {
   SentSms,
   EmailFormData,
   SmsFormData,
-} from '../types/contacts';
+  EditContactData
+} from '../types/contact';
+import { MoreInfoResponse } from '../types/moreinfo';
+import { CommunicationLogs } from '../types/contact';
+
 
 export const contactsApi = {
   // Get all contacts with optional filters
@@ -32,7 +36,7 @@ export const contactsApi = {
 
   // Update existing contact
   updateContact: async (contact_id: number, data: ContactFormData): Promise<Contact> => {
-    return apiClient.put<Contact>(`/api/contacts/update/${contact_id}`, data);
+    return apiClient.put<Contact>(`/api/contact/update/${contact_id}`, data);
   },
 
   // Delete contact
@@ -55,24 +59,17 @@ export const contactsApi = {
     return apiClient.get<SentEmail[]>(`/api/contact/contact-emails/${contact_id}`);
   },
 
-  // Get all communication logs
-  getCommunicationLogs: async (): Promise<{
-    emails: Array<{
-      id: number;
-      contact: string;
-      contact_id: number;
-      subject: string;
-      message: string;
-      sent_at: string;
-    }>;
-    sms: Array<{
-      id: number;
-      contact: string;
-      contact_id: number;
-      body: string;
-      sent_at: string;
-    }>;
-  }> => {
-    return apiClient.get('/api/contact/communication-logs');
+  editContact: async (contactId: number, data: EditContactData) => {
+    return apiClient.put(`/api/contact/${contactId}`, data);
   },
+
+  getMoreInfoById: async (contact_id: number): Promise<MoreInfoResponse> => {
+        const params: Record<string, string> = {};
+        return apiClient.get<MoreInfoResponse>(`/api/contact/moreinfo/${contact_id}`, params);
+    },
+
+  getCommunicationLogs: async (): Promise<CommunicationLogs[]> => {
+    return apiClient.get<CommunicationLogs[]>('/api/contact/communication-logs');
+}
+
 };

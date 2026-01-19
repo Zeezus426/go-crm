@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ContactFormData, LeadClassification } from '@/lib/types/contacts';
+import { ContactFormData, LeadClassification } from '@/lib/types/contact';
 import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
 import { Select } from '../ui/Select';

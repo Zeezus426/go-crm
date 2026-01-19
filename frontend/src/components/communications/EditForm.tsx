@@ -1,27 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Contact } from '@/lib/types/contacts';
+import { Contact } from '@/lib/types/contact';
 import { Input } from '../ui/Input';
 import { Textarea } from '../ui/Textarea';
 import { Select } from '../ui/Select';
 import { Button } from '../ui/Button';
+import { EditContactData, EditContactFormProps } from '@/lib/types/contact';
 
-interface EditContactFormData {
-  Full_name?: string;
-  company?: string;
-  lead_class?: string;
-  email?: string;
-  phone_number?: string;
-  address?: string;
-  notes?: string;
-}
-
-interface EditContactFormProps {
-  contact: Contact;
-  onSubmit: (data: EditContactFormData) => Promise<void>;
-  onCancel?: () => void;
-}
 
 const leadClassOptions = [
   { value: 'New', label: 'New' },
@@ -34,7 +20,7 @@ const leadClassOptions = [
 ];
 
 export function EditContactForm({ contact, onSubmit, onCancel }: EditContactFormProps) {
-  const [formData, setFormData] = useState<EditContactFormData>({
+  const [formData, setFormData] = useState<EditContactData>({
     Full_name: contact.Full_name,
     company: contact.company,
     lead_class: contact.lead_class,
@@ -73,7 +59,7 @@ export function EditContactForm({ contact, onSubmit, onCancel }: EditContactForm
     }
   };
 
-  const handleChange = (field: keyof EditContactFormData) => (
+  const handleChange = (field: keyof EditContactData) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [field]: e.target.value });

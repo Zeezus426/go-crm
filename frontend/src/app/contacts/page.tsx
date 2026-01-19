@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { ContactList } from '@/components/contacts/ContactList';
 import { useContacts } from '@/lib/hooks/useContacts';
-import { Contact } from '@/lib/types/contacts';
+import { Contact } from '@/lib/types/contact';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';

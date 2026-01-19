@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { contactsApi } from '../api/contacts';
-import { Contact, ContactFormData, ContactFilters } from '../types/contacts';
+import { Contact, ContactFormData, ContactFilters } from '../types/contact';
 import { ApiError } from '../api/client';
 
 export function useContacts(filters?: ContactFilters) {

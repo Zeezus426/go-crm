@@ -1,24 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { contactsApi } from '../api/contacts';
 import { ApiError } from '../api/client';
+import { CommunicationLogs } from '../types/contact';
 
-interface CommunicationLog {
-  id: number;
-  contact: string;
-  contact_id: number;
-  subject?: string;
-  message?: string;
-  body?: string;
-  sent_at: string;
-}
-
-interface CommunicationLogs {
-  emails: CommunicationLog[];
-  sms: CommunicationLog[];
-}
 
 export function useCommunications() {
-  const [logs, setLogs] = useState<CommunicationLogs>({ emails: [], sms: [] });
+  const [logs, setLogs] = useState<CommunicationLogs[]>([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
