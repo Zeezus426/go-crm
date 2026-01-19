@@ -23,7 +23,7 @@ model = LiteLlm(
     # base_url=api_base_url,
     stream = True,
     model = "openai/GLM-4.6V-Flash",
-    api_key=os.getenv("GLM_API_KEY"),
+    api_key=config("GLM_API_KEY"),
     base_url="https://api.z.ai/api/paas/v4/",
     response_format={"type": "json_object"}
 

@@ -14,9 +14,11 @@ from pathlib import Path
 from decouple import config
 import os
 from celery.schedules import crontab
-from dotenv import load_dotenv
-load_dotenv()
+from dotenv import load_dotenv, find_dotenv
 
+# Load .env from the root directory     
+load_dotenv(find_dotenv())
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -107,12 +109,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'go-crm',
-        'USER': 'Go-crm',
-        'PASSWORD': 'G0-Supply-C3RM-458',
-        'HOST': 'localhost',  # or '127.0.0.1'
-        'PORT': '1111',  # Host port from docker-compose
+        'ENGINE': "django.db.backends.postgresql",
+        'NAME': config("POSTGRES_NAME"),
+        'USER': config("POSTGRES_USER"),
+        'PASSWORD': config("POSTGRES_PASSWORD"),
+        'HOST': config("POSTGRES_HOST"),
+        'PORT': config("POSTGRES_PORT"),
     }
 }
 # Password validation
@@ -160,18 +162,18 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 
 SMS_BACKEND = 'sms.backends.twilio.SmsBackend'
 
-TWILIO_ACCOUNT=os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH=os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_ACCOUNT=config("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH=config("TWILIO_AUTH_TOKEN")
 
 
 CELERY_TIMEZONE = "Australia/Sydney"
-CELERY_BROKER_URL = os.getenv("REDIS_HOST")
+CELERY_BROKER_URL = config("REDIS_HOST")
 # Was testing if it was working hence the 5 minute interval
 # When more stable and actually in prod will swap back to every hour
 CELERY_BEAT_SCHEDULE = {
