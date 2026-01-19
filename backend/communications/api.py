@@ -45,14 +45,33 @@ communications_router = Router()
 
 @communications_router.post("/send-email/{contact_id}", response=SentEmailSchema, auth=django_auth)
 def send_email_endpoint(request, contact_id: int, payload: EmailSendSchema):
+    contact = get_object_or_404(Contact, pk=contact_id)
+
     message = EmailMessage(
         subject=payload.subject,
         body=payload.message,
         from_email="zachaldin@outlook.com",
-        to=[get_object_or_404(Contact, pk=contact_id).email],
+        to=[contact.email],
     )
 
-    return None
+    message.send()
+
+    # Create email record
+    email_record = sent_emails.objects.create(
+        contact=contact,
+        subject=payload.subject,
+        message=payload.message,
+        sent_at=timezone.now(),
+        from_email="zachaldin@outlook.com",
+        sent_by=request.user.id if request.user.is_authenticated else None
+    )
+
+    # Update lead class if it's a new contact
+    if contact.lead_class == "New":
+        contact.lead_class = "Contacted"
+        contact.save()
+
+    return email_record
 
 
 @communications_router.post("/send-sms/{contact_id}", response=SentSmsSchema, auth=django_auth)
