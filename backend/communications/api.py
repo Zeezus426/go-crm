@@ -7,7 +7,6 @@ from sms import send_sms
 from .models import sent_emails, sent_sms
 from contacts.models import Contact
 
-
 class SentEmailSchema(ModelSchema):
     class Meta:
         model = sent_emails
