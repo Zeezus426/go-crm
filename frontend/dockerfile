@@ -2,13 +2,17 @@
 
 FROM node:20-slim AS base
 
-# Install system dependencies required by Sharp
+# Install system dependencies required by Sharp and pnpm
 RUN apt-get update && apt-get install -y \
     libvips-dev \
     build-essential \
     python3 \
+    curl \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
+
+# Install pnpm globally
+RUN npm install -g pnpm
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -17,19 +21,15 @@ WORKDIR /app
 # Force cache bust with current date/time (uncomment for production builds)
 RUN echo "Cache bust: $(date) - epoch: $(date +%s) - Sharp fix with libvips v2"
 
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
-# Use --force flag for React 19 compatibility
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci --force; \
-  elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies with pnpm
+RUN pnpm install --frozen-lockfile
 
 # Explicitly install platform-specific packages for Linux GNU
 # These are all the native dependencies that Next.js and Tailwind CSS v4 need
-RUN pnpm install --force --no-save \
+RUN pnpm add --force --save-dev \
   @rollup/rollup-linux-x64-gnu \
   @next/swc-linux-x64-gnu \
   lightningcss-linux-x64-gnu \
@@ -37,7 +37,7 @@ RUN pnpm install --force --no-save \
   @tailwindcss/oxide-linux-x64-gnu
 
 # Rebuild any additional native modules for the target platform
-RUN pnpm rebuild --force
+RUN pnpm rebuild
 
 # Rebuild the source code only when needed
 FROM base AS builder
