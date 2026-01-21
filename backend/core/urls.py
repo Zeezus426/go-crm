@@ -30,7 +30,7 @@ api.add_router("todo", todo_router)
 api.add_router("communications", communications_router)
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/", api.urls), 
+    path("api/", api.urls),
 
     path("", include('mcp_server.urls')),
     path("anymail/", include("anymail.urls")),
