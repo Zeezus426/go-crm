@@ -3,15 +3,11 @@ from google.adk.tools.mcp_tool.mcp_toolset import McpToolset
 from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams, SseConnectionParams, SseServerParams
 from mcp import StdioServerParameters
 from google.adk.models.lite_llm import LiteLlm
-import os
-from dotenv import load_dotenv 
+
 from .prompting import research_prompt
-import litellm
 from pydantic import BaseModel, Field
 from typing import Literal
-
-load_dotenv()
-
+from decouple import config
 
 # Define the model once and reuse it
 model_name_at_endpoint = "lm_studio/glm-4.6v-flash"
@@ -22,7 +18,7 @@ model = LiteLlm(
     # model = model_name_at_endpoint,
     # base_url=api_base_url,
     stream = True,
-    model = "openai/GLM-4.6V-Flash",
+    model = "openai/GLM-4.7-Flash",
     api_key=config("GLM_API_KEY"),
     base_url="https://api.z.ai/api/paas/v4/",
     response_format={"type": "json_object"}
@@ -50,35 +46,25 @@ root_agent = LlmAgent(
     tools=[
         McpToolset(
             connection_params=StdioConnectionParams(
-                server_params = StdioServerParameters(
-                    command="uvx",  # The command to run the server
-                    args=["duckduckgo-mcp-server"]  # Path to server script and transport mode
+                timeout=300,
+                server_params=StdioServerParameters(
+                    command="npx",
+                    args=["-y", "firecrawl-mcp"],
+                    env={
+                        "FIRECRAWL_API_URL": "http://localhost:3002",
+                        "FIRECRAWL_API_KEY": "sk-local"
+                    },
                 )
             )
         ),
         McpToolset(
-            connection_params=SseConnectionParams(
-                url="http://localhost:11235/mcp/sse",
-                timeout=20,
+            connection_params=StdioConnectionParams(
+                server_params=StdioServerParameters(
+                    command="uvx",
+                    args=["duckduckgo-mcp", "serve"]
+                )
             )
         ),
-        McpToolset(
-            connection_params=StdioConnectionParams(
-                timeout=20,
-                server_params=StdioServerParameters(
-                    command="docker",
-                    args=[
-                        "run", 
-                        "-i",  # Keep STDIN open
-                        "--rm",  # Remove container after exit
-                        "-e", "NEO4J_URI=bolt://host.docker.internal:7687",
-                        "-e", "NEO4J_USERNAME=neo4j",
-                        "-e", "NEO4J_PASSWORD=your-password",
-                        "mcp/neo4j-cypher"
-                    ],
-        )
-    )
-)
     ]
 )
 

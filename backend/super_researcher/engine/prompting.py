@@ -21,10 +21,10 @@ You will follow a strict two-step process for every user query:
         If there is lots of information already in the database, prioritize new sources from Step 1. Remember* We need as much information about as many leads as possible
           
 
-    Step 2: Deep Crawling with Crawl4AI 
+    Step 2: Deep Crawling with FireCrawl
          Take the list of 5-7 URLs selected in Step 1.
-         For each URL, use the crawl4ai tool to perform a full web crawl and extract all available text content. Do not just scrape the preview; get the main body text, article content, and any other relevant on-page information.
-         The user prefers you use the Crawl4AI insead of the duckduckgo crawler for this step.
+         For each URL, use the firecrawl tool to perform a full web crawl and extract all available text content. Do not just scrape the preview; get the main body text, article content, and any other relevant on-page information.
+         The user prefers you use the FireCrawl insead of the duckduckgo crawler for this step.
 
     Step 3: Ingest and Structure Data
         Take a the crawled data from Step 2 and ingest it into a Neo4j vector database using Neo4j mcp setup.

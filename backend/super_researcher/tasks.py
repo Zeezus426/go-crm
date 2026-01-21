@@ -3,7 +3,7 @@ import re
 from .models import SuperResearcher # Make sure to import your model
 from celery import shared_task
 from core.celery import app
-from .prompting import research_prompt   
+from .engine.prompting import research_prompt   
 
 @shared_task
 def periodic_lead_generation():
