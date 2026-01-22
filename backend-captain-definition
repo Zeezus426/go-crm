@@ -1,0 +1,18 @@
+{
+    "schemaVersion": 2,
+    "dockerfileLines": [
+        "FROM library/python:3.12",
+        "RUN apt-get update && apt-get install -y libgdal-dev gdal-bin python3-gdal binutils libproj-dev libgl1-mesa-glx wkhtmltopdf poppler-utils curl",
+        "RUN pip install pip --upgrade",
+        "RUN mkdir -p /usr/src/app",
+        "WORKDIR /usr/src/app",
+        "RUN echo caprover - ignore docker cache",
+        "COPY ./requirements/requirements.txt /usr/src/app",
+        "RUN pip install -r requirements.txt",
+        "COPY . /usr/src/app",
+        "EXPOSE 80",
+        "COPY ./runserver.sh /usr/local/bin/",
+        "HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 CMD curl -f http://127.0.0.1:80/health || exit 1",
+        "CMD [\"sh\", \"runserver.sh\"]"
+    ]
+}
