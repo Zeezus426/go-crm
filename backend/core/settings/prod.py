@@ -7,8 +7,11 @@ Includes security hardening, production services, and monitoring.
 
 from .base import *
 from decouple import config
-
+import logging
+import sys
+import json
 # Security & Allowed Hosts
+
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(", ")
 
 # Trust proxy headers from nginx
@@ -94,37 +97,68 @@ STORAGES = {
     },
 }
 
-# Logging Configuration (Production)
+
+
+# Example of a simple JSON formatter. 
+# For more advanced structured logging, consider libraries like 'structlog' or 'python-json-logger'.
+class JsonFormatter(logging.Formatter):
+    def format(self, record):
+        log_record = {
+            "level": record.levelname,
+            "timestamp": self.formatTime(record, self.datefmt),
+            "name": record.name,
+            "message": record.getMessage(),
+            # Add custom context here (e.g., request_id, user_id)
+            "request_id": getattr(record, 'request_id', 'N/A'),
+        }
+        if record.exc_info:
+            log_record['exc_info'] = self.formatException(record.exc_info)
+        return json.dumps(log_record)
+
+# Use the built-in dictConfig method
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
+        'json': {
+            '()': JsonFormatter,
+        },
         'verbose': {
             'format': '{levelname} {asctime} {module} {message}',
             'style': '{',
         },
     },
     'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'django.log',
-            'formatter': 'verbose',
+        'stdout': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout, # Direct to stdout for cloud platforms/Docker
+            'formatter': 'json',
+            'level': 'INFO', # Adjust as needed (e.g., INFO, WARNING, ERROR)
         },
-    },
-    'root': {
-        'handlers': ['file'],
-        'level': 'INFO',
+        'mail_admins': {
+            'class': 'django.utils.log.AdminEmailHandler',
+            'level': 'ERROR', # Only email on ERRORs or CRITICALs
+        }
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['stdout'],
             'level': 'INFO',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['stdout', 'mail_admins'],
+            'level': 'WARNING', # Logs 4XX client errors as WARNINGs and 5XX server errors as ERRORs
+            'propagate': False,
+        },
+        'my_app': { # Logger for your application's code (use logging.getLogger('my_app'))
+            'handlers': ['stdout'],
+            'level': 'INFO', 
             'propagate': False,
         },
     },
+    'root': {
+        'handlers': ['stdout'],
+        'level': 'WARNING', # Default to WARNING for third-party libraries
+    },
 }
-
-# Create logs directory if it doesn't exist
-import os
-os.makedirs(BASE_DIR / 'logs', exist_ok=True)
