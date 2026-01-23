@@ -1,8 +1,4 @@
-#!/bin/bash
-set -e
-
-# echo "Collecting static files to Azure Storage..."
-# python manage.py collectstatic --noinput
+#!/bin/sh
+chmod +x manage.py
 python manage.py migrate
-echo "Starting Daphne ASGI server..."
-exec daphne -b 0.0.0.0 -p 8000 --proxy-headers core.asgi:application
+daphne -b 0.0.0.0 -p 80  --proxy-headers djecommerce.asgi:application
