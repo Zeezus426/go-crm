@@ -1,3 +1,4 @@
+from pathlib import Path
 import subprocess
 import re
 from .models import SuperResearcher # Make sure to import your model
@@ -32,22 +33,17 @@ def periodic_lead_generation():
         }
 
 @shared_task(bind=True)
-def run_researcher(self, prompt: str, working_dir: str = "super_researcher"):
+def run_researcher(prompt: str, task_id=None):
     """
-    Executes the 'adk' CLI tool with a given prompt and returns its output.
-
-    Args:
-        prompt (str): The prompt to send to the AI engine.
-        working_dir (str): The directory where the command should be run.
-
-    Returns:
-        dict: Result with stdout, stderr, return_code, and task_id.
+    Executes the 'adk' CLI tool with a given prompt.
     """
-    command_to_run_cli = ["adk", "run", "engine"]
-
+    working_dir = Path(__file__).resolve().parents[2]
+    print("PATH: " + str(working_dir))
+    command_to_run_cli = ["adk", "run", "backend/super_researcher/engine"]
+    
     try:
-        # Update task state to show it's running
-        self.update_state(state='PROGRESS', meta={'status': 'Starting researcher process'})
+        print(f"Starting researcher process: {' '.join(command_to_run_cli)}")
+        print(f"Prompt: {prompt}")
 
         process = subprocess.Popen(
             command_to_run_cli,
@@ -58,32 +54,43 @@ def run_researcher(self, prompt: str, working_dir: str = "super_researcher"):
             text=True
         )
 
-        print(f"Starting researcher process: {' '.join(command_to_run_cli)}")
-        stdout, stderr = process.communicate(input=prompt)
-        return_code = process.returncode
+        # Send the prompt and wait for response with a timeout
+        try:
+            stdout, stderr = process.communicate(input=prompt, timeout=60)
+            return_code = process.returncode
 
-        print(f"Process finished with return code: {return_code}")
+            print(f"Process finished with return code: {return_code}")
 
-        # If successful, trigger the save task
-        if return_code == 0 and stdout:
-            save_research_output.delay(stdout)
+            if stderr:
+                print("Error output:")
+                print(stderr)  # Print full stderr to see what went wrong
 
-        return {
-            'stdout': stdout,
-            'stderr': stderr,
-            'return_code': return_code,
-            'task_id': self.request.id
-        }
+            if return_code == 0 and stdout:
+                print("Output received:")
+                print(stdout[:500])  # Print first 500 chars to avoid huge output
+
+            return {
+                'stdout': stdout,
+                'stderr': stderr,
+                'return_code': return_code,
+                'task_id': task_id  # Pass this as a parameter instead
+            }
+        except subprocess.TimeoutExpired:
+            print("Process timed out after 60 seconds")
+            process.kill()
+            stdout, stderr = process.communicate()
+            return {
+                'stdout': stdout,
+                'stderr': stderr,
+                'return_code': -2,
+                'task_id': task_id
+            }
 
     except FileNotFoundError:
-        error_msg = f"Error: The command '{command_to_run_cli[0]}' was not found."
-        print(error_msg + "Please ensure 'adk' is installed and in your system's PATH.")
-        return {'stdout': None, 'stderr': error_msg, 'return_code': -1, 'task_id': self.request.id}
-    except Exception as e:
-        error_msg = f"An unexpected error occurred during subprocess execution: {e}"
+        error_msg = f"Error: 'adk' command was not found."
         print(error_msg)
-        return {'stdout': None, 'stderr': error_msg, 'return_code': -1, 'task_id': self.request.id}
-    
+        return {'stdout': None, 'stderr': error_msg, 'return_code': -1, 'task_id': task_id}
+
 
 @shared_task
 def save_research_output(raw_output_text: str):
