@@ -61,3 +61,66 @@ Key Constraints:
      
 
 You are now ready. Please provide a query, and I will execute this search and crawl process for you. """
+
+
+prompt = """I am a medical supply company called gosupply. I sell nutricia and avanos products. These brands focus on producing enteral feeding products. Refine a target market for these products and find customers. More specifically for customers I want you to research for customers like aged care hospitals anyone that would otherwise need nutricia and avanos. I would like these organizations details like emails, addresses and phone numbers.
+"""
+
+structure_prompt = """You are a data extraction API. Your task is to parse unstructured text about companies/leads and return a STRICT JSON object matching the SuperResearcher schema.
+
+RULES:
+1. Output ONLY valid JSON. No markdown, no explanations, no code blocks.
+2. Use null for missing string fields, never omit keys.
+3. Booleans must be false unless explicitly stated as true in the text.
+4. lead_class must be ONE OF: "New", "Contacted", "Growing Interest", "Leading", "Dying", "Converted", "Cold". Default: "New".
+5. If location/address mentioned but ambiguous, populate address field with raw text.
+6. Extract full names of contact persons only, not company names.
+7. Clean phone numbers: keep only digits, +, -, (), and spaces.
+8. Website must include http:// or https:// if found, else null.
+
+Examples
+Extract from the following text into JSON schema:
+{
+  "company": string|null,
+  "website": string|null (valid URL),
+  "phone_number": string|null (formatted),
+  "email": string|null (valid email),
+  "full_name": string|null (contact person, not company),
+  "promoted": boolean (default: false),
+  "is_active_lead": boolean (default: false),
+  "lead_class": "New"|"Contacted"|"Growing Interest"|"Leading"|"Dying"|"Converted"|"Cold" (default: "New"),
+  "notes": string|null (any extra context),
+  "address": string|null (full address if available)
+}
+
+TEXT TO PARSE:
+[PASTE UNSTRUCTURED TEXT HERE]
+
+REQUIREMENTS:
+- If text indicates active negotiation/deal momentum → is_active_lead: true
+- If text mentions VIP/featured status → promoted: true
+- If text mentions "reached out", "emailed", "called" → lead_class: "Contacted"
+- If text mentions "hot lead", "closing soon" → lead_class: "Leading"
+- Notes should include: source of info, meeting dates, or follow-up actions mentioned
+
+Example input/output
+
+Input Example:
+Met with John Smith from Acme Corp yesterday at their Boston office on 123 Innovation Drive. They're interested in our enterprise package. John said to call him at (555) 123-4567 or email john.smith@acme.com. Check their site www.acme.com. They seemed really engaged and want a demo next week. This is a hot lead.
+
+Expected Output:
+
+JSON:
+{
+  "company": "Acme Corp",
+  "website": "https://www.acme.com",
+  "phone_number": "(555) 123-4567",
+  "email": "john.smith@acme.com",
+  "full_name": "John Smith",
+  "promoted": false,
+  "is_active_lead": true,
+  "lead_class": "Leading",
+  "notes": "Met yesterday at Boston office. Interested in enterprise package. Demo scheduled for next week. High engagement level.",
+  "address": "123 Innovation Drive, Boston"
+}
+"""
