@@ -21,6 +21,7 @@ from contacts.api import contact_router
 from todo.api import todo_router
 from user.api import auth_router
 from communications.api import communications_router
+from super_researcher.api import super_researcher_router
 from ninja import NinjaAPI
 
 api = NinjaAPI()
@@ -29,6 +30,7 @@ api.add_router("auth", auth_router)
 api.add_router("contact", contact_router)
 api.add_router("todo", todo_router)
 api.add_router("communications", communications_router)
+api.add_router("super_researcher", super_researcher_router)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", api.urls),
